@@ -1,729 +1,497 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>IP Product Development Tracking Dashboard 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Developing Projects Tracking Dashboard 2026</title>
+    <style>
+        /* Modern & Professional Theme Styles */
+        :root {
+            --primary-color: #1e293b;
+            --accent-color: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+            --border-color: #e2e8f0;
+            --ongoing-bg: #e0f2fe;
+            --ongoing-text: #0369a1;
+            --finish-bg: #f1f5f9;
+            --finish-text: #475569;
+            --pass-bg: #dcfce7;
+            --pass-text: #15803d;
+            --fail-bg: #fee2e2;
+            --fail-text: #b91c1c;
+            --pending-bg: #fef9c3;
+            --pending-text: #a16207;
+        }
 
-  :root {
-    --navy:        #0f2044;
-    --navy-mid:    #1a3260;
-    --navy-light:  #2a4a8a;
-    --accent:      #2563eb;
-    --bg:          #f4f6fb;
-    --surface:     #ffffff;
-    --surface2:    #f8f9fc;
-    --border:      #dde3f0;
-    --border2:     #c8d1e8;
-    --text:        #111827;
-    --text-mid:    #374151;
-    --text-muted:  #6b7280;
-    --text-light:  #9ca3af;
-    --row-alt:     #f0f4fb;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    --ongoing-bg:    #dbeafe; --ongoing-text:  #1d4ed8;
-    --drop-bg:       #fee2e2; --drop-text:     #b91c1c;
-    --discuss-bg:    #fef3c7; --discuss-text:  #92400e;
-    --pass-bg:       #dcfce7; --pass-text:     #15803d;
-    --fail-bg:       #fee2e2; --fail-text:     #b91c1c;
-    --pending-bg:    #fef9c3; --pending-text:  #a16207;
-    --inprog-bg:     #e0f2fe; --inprog-text:   #0369a1;
-    --sent-bg:       #f0fdf4; --sent-text:     #166534;
-    --wait-bg:       #ede9fe; --wait-text:     #5b21b6;
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 24px;
+        }
 
-    --radius:    8px;
-    --radius-lg: 14px;
-    --shadow:    0 2px 12px rgba(15,32,68,.08);
-    --shadow-lg: 0 8px 32px rgba(15,32,68,.13);
-  }
+        .dashboard-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
 
-  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+        header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
 
-  /* Header */
-  .site-header {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, var(--navy-light) 100%);
-    padding: 22px 36px 20px;
-    display: flex; align-items: center; justify-content: space-between; gap: 20px;
-    box-shadow: 0 4px 24px rgba(15,32,68,.22);
-  }
-  .header-left  { display:flex; align-items:center; gap:16px; }
-  .header-icon  { width:46px;height:46px;background:rgba(255,255,255,.13);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;border:1.5px solid rgba(255,255,255,.18); }
-  .header-title h1 { font-size:1.25rem;font-weight:700;color:#fff;letter-spacing:-.01em; }
-  .header-title p  { font-size:.8rem;color:rgba(255,255,255,.6);margin-top:1px; }
-  .header-actions  { display:flex;gap:10px;align-items:center; }
+        header h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+        }
 
-  /* Buttons */
-  .btn { display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:all .18s ease;white-space:nowrap; }
-  .btn-primary { background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.35); }
-  .btn-primary:hover { background:#1d4ed8;transform:translateY(-1px); }
-  .btn-outline { background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.25); }
-  .btn-outline:hover { background:rgba(255,255,255,.2); }
-  .btn-sm { padding:5px 11px;font-size:.78rem; }
-  .btn-danger { background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5; }
-  .btn-danger:hover { background:#fecaca; }
-  .btn-edit { background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe; }
-  .btn-edit:hover { background:#dbeafe; }
-  .btn-view { background:#f0fdf4;color:#15803d;border:1px solid #86efac;font-size:.75rem;padding:4px 10px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:600;font-family:'DM Sans',sans-serif;transition:all .18s; }
-  .btn-view:hover { background:#dcfce7; }
-  .btn-cancel { background:var(--bg);color:var(--text-mid);border:1.5px solid var(--border); }
-  .btn-cancel:hover { background:var(--border); }
+        header p {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 4px;
+        }
 
-  /* Main */
-  .main { padding:28px 36px 48px; max-width:1920px; margin:0 auto; }
+        /* Controls Section (Search & Filter) */
+        .controls-panel {
+            background-color: var(--card-bg);
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
 
-  /* Stats */
-  .stats-row { display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:26px; }
-  .stat-card { background:var(--surface);border-radius:var(--radius-lg);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;align-items:center;gap:14px; }
-  .stat-icon { width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0; }
-  .stat-icon.blue  { background:#dbeafe; }
-  .stat-icon.green { background:#dcfce7; }
-  .stat-icon.red   { background:#fee2e2; }
-  .stat-icon.amber { background:#fef9c3; }
-  .stat-icon.navy  { background:#e0e7ff; }
-  .stat-icon.purple{ background:#ede9fe; }
-  .stat-label { font-size:.73rem;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em; }
-  .stat-value { font-size:1.55rem;font-weight:700;color:var(--navy);line-height:1.1; }
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
 
-  /* Toolbar */
-  .toolbar { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:18px;box-shadow:var(--shadow); }
-  .toolbar-left  { display:flex;flex-wrap:wrap;gap:10px;flex:1; }
-  .search-wrap   { position:relative;min-width:230px; }
-  .search-wrap input { width:100%;padding:8px 12px 8px 34px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.85rem;background:var(--bg);color:var(--text);transition:border-color .18s; }
-  .search-wrap input:focus { outline:none;border-color:var(--accent);background:#fff; }
-  .search-icon { position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.85rem;pointer-events:none; }
-  select.filter-select { padding:8px 28px 8px 10px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.85rem;background:var(--bg);color:var(--text);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .18s; }
-  select.filter-select:focus { outline:none;border-color:var(--accent);background-color:#fff; }
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
 
-  /* Table */
-  .table-card { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden; }
-  .table-header { padding:14px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2); }
-  .table-header-left h2 { font-size:.95rem;font-weight:700;color:var(--navy); }
-  .table-header-left p  { font-size:.78rem;color:var(--text-muted);margin-top:1px; }
-  .table-scroll { overflow-x:auto; }
+        .search-box input:focus {
+            border-color: var(--primary-color);
+        }
 
-  table { width:100%;border-collapse:collapse;font-size:.82rem; }
-  thead th { background:var(--navy);color:rgba(255,255,255,.92);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;padding:11px 10px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:2; }
-  thead th:last-child { border-right:none; }
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
 
-  /* Category header rows */
-  .cat-row td { background:linear-gradient(90deg,#1a3260,#2a4a8a);color:#fff;font-weight:700;font-size:.8rem;padding:8px 12px;letter-spacing:.03em; }
+        .filter-group select {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: #fff;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
 
-  tbody tr { border-bottom:1px solid var(--border);transition:background .12s; }
-  tbody tr:not(.cat-row):nth-child(even) { background:var(--row-alt); }
-  tbody tr:not(.cat-row):hover { background:#e8eef8; }
+        .status-summary {
+            margin-left: auto;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
 
-  td { padding:9px 10px;vertical-align:middle;color:var(--text-mid);border-right:1px solid var(--border); }
-  td:last-child { border-right:none; }
+        /* Responsive Table Container */
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
 
-  .td-no    { font-family:'DM Mono',monospace;font-weight:500;color:var(--navy);white-space:nowrap; }
-  .td-name  { font-weight:600;color:var(--navy);min-width:180px; }
-  .td-sku   { font-family:'DM Mono',monospace;font-size:.74rem;color:var(--text-muted);white-space:nowrap; }
-  .td-cond  { font-size:.78rem;color:var(--text-muted);white-space:nowrap; }
-  .td-batch { font-family:'DM Mono',monospace;font-size:.76rem; }
-  .td-date  { white-space:nowrap;font-size:.76rem; }
-  .td-note  { min-width:160px;font-size:.75rem;color:var(--text-muted); }
-  .tl-cell  { min-width:46px;text-align:center;font-size:.7rem; }
-  .tl-val   { font-size:.7rem;color:var(--navy-light);font-weight:600;display:block;white-space:nowrap; }
-  .tl-dot   { display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--border2);margin:2px auto; }
-  .actions-cell { display:flex;gap:5px;white-space:nowrap; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+            white-space: nowrap;
+        }
 
-  /* Badges */
-  .badge { display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:.72rem;font-weight:600;white-space:nowrap; }
-  .badge-ongoing  { background:var(--ongoing-bg);  color:var(--ongoing-text); }
-  .badge-drop     { background:var(--drop-bg);     color:var(--drop-text); }
-  .badge-discuss  { background:var(--discuss-bg);  color:var(--discuss-text); }
-  .badge-pass     { background:var(--pass-bg);     color:var(--pass-text); }
-  .badge-fail     { background:var(--fail-bg);     color:var(--fail-text); }
-  .badge-pending  { background:var(--pending-bg);  color:var(--pending-text); }
-  .badge-inprog   { background:var(--inprog-bg);   color:var(--inprog-text); }
-  .badge-sent     { background:var(--sent-bg);     color:var(--sent-text); }
-  .badge-wait     { background:var(--wait-bg);     color:var(--wait-text); }
+        th {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 14px 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+        }
 
-  /* Empty */
-  .empty-state { text-align:center;padding:60px 20px;color:var(--text-muted); }
-  .empty-state .empty-icon { font-size:3rem;margin-bottom:12px; }
+        th.timeline-header {
+            text-align: center;
+            background-color: #334155;
+            border-bottom: 1px solid #475569;
+        }
 
-  /* Modal */
-  .modal-overlay { display:none;position:fixed;inset:0;background:rgba(10,20,50,.45);z-index:1000;align-items:center;justify-content:center;padding:20px; }
-  .modal-overlay.open { display:flex; }
-  .modal { background:var(--surface);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:100%;max-width:740px;max-height:92vh;display:flex;flex-direction:column;animation:slideUp .22s ease; }
-  @keyframes slideUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
-  .modal-head { padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--navy);border-radius:var(--radius-lg) var(--radius-lg) 0 0; }
-  .modal-head h3 { font-size:1rem;font-weight:700;color:#fff; }
-  .modal-close { background:rgba(255,255,255,.12);border:none;cursor:pointer;color:#fff;width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:background .15s; }
-  .modal-close:hover { background:rgba(255,255,255,.22); }
-  .modal-body { padding:22px 24px;overflow-y:auto;flex:1; }
-  .modal-foot { padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:var(--surface2);border-radius:0 0 var(--radius-lg) var(--radius-lg); }
+        th.month-header {
+            background-color: #475569;
+            text-align: center;
+            font-size: 11px;
+            width: 45px;
+        }
 
-  .form-grid { display:grid;grid-template-columns:1fr 1fr;gap:14px 18px; }
-  .form-full  { grid-column:1/-1; }
-  .form-group { display:flex;flex-direction:column;gap:5px; }
-  .form-group label { font-size:.78rem;font-weight:600;color:var(--navy); }
-  .form-group input,.form-group select,.form-group textarea { padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.84rem;background:var(--bg);color:var(--text);transition:border-color .15s; }
-  .form-group input:focus,.form-group select:focus,.form-group textarea:focus { outline:none;border-color:var(--accent);background:#fff; }
-  .form-group textarea { resize:vertical;min-height:60px; }
-  .form-section-title { font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin:10px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--accent);grid-column:1/-1; }
-  .tl-form-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;grid-column:1/-1; }
-  .tl-form-item { display:flex;flex-direction:column;gap:3px; }
-  .tl-form-item label { font-size:.7rem;font-weight:500;color:var(--text-muted); }
-  .tl-form-item input { padding:5px 7px;font-size:.74rem; }
+        td {
+            padding: 12px 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
 
-  /* Confirm */
-  .confirm-modal { max-width:380px; }
-  .confirm-body { padding:24px;text-align:center; }
-  .confirm-icon { font-size:2.5rem;margin-bottom:10px; }
-  .confirm-body h4 { font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:6px; }
-  .confirm-body p  { font-size:.85rem;color:var(--text-muted); }
+        tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
 
-  /* Toast */
-  .toast-container { position:fixed;bottom:28px;right:28px;z-index:2000;display:flex;flex-direction:column;gap:8px; }
-  .toast { background:var(--navy);color:#fff;padding:11px 18px;border-radius:var(--radius);font-size:.84rem;font-weight:500;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;animation:toastIn .25s ease;min-width:220px; }
-  .toast.success { border-left:4px solid #22c55e; }
-  .toast.error   { border-left:4px solid #ef4444; }
-  .toast.info    { border-left:4px solid #3b82f6; }
-  @keyframes toastIn { from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none} }
+        tr:hover td {
+            background-color: #f1f5f9;
+        }
 
-  #importInput { display:none; }
+        /* Badges & UI Elements */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+        }
 
-  @media(max-width:768px){
-    .site-header{padding:16px 20px;flex-direction:column;align-items:flex-start;}
-    .main{padding:20px 16px 40px;}
-    .stats-row{grid-template-columns:1fr 1fr;}
-    .form-grid{grid-template-columns:1fr;}
-    .toolbar{flex-direction:column;}
-  }
-</style>
+        .badge-ongoing { background-color: var(--ongoing-bg); color: var(--ongoing-text); }
+        .badge-finish { background-color: var(--finish-bg); color: var(--finish-text); }
+        .badge-pass { background-color: var(--pass-bg); color: var(--pass-text); }
+        .badge-fail { background-color: var(--fail-bg); color: var(--fail-text); }
+        .badge-pending { background-color: var(--pending-bg); color: var(--pending-text); }
+
+        .storage-tag {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .btn-report {
+            display: inline-flex;
+            align-items: center;
+            background-color: #fff;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-report:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .timeline-cell {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .text-center { text-align: center; }
+
+        /* Loading & Error States */
+        .loading-overlay {
+            padding: 40px;
+            text-align: center;
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .error-message {
+            color: #ef4444;
+            padding: 20px;
+            background-color: #fef2f2;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #fee2e2;
+        }
+    </style>
 </head>
 <body>
 
-<header class="site-header">
-  <div class="header-left">
-    <div class="header-icon">🧪</div>
-    <div class="header-title">
-      <h1>IP Product Development Tracking Dashboard</h1>
-      <p>R&amp;D &amp; Product Development Project Monitor — 2026</p>
-    </div>
-  </div>
-  <div class="header-actions">
-    <button class="btn btn-outline" onclick="triggerImport()">⬆ Import</button>
-    <button class="btn btn-outline" onclick="openModal('exportModal')">⬇ Export</button>
-    <button class="btn btn-primary" onclick="openAddModal()">＋ Add Project</button>
-    <input type="file" id="importInput" accept=".json,.csv" onchange="handleImport(event)"/>
-  </div>
-</header>
+    <div class="dashboard-container">
+        <header>
+            <h1>Product Developing Projects Tracking Dashboard</h1>
+            <p>🔄 Live Syncing with Google Sheets (Project developing progress)</p>
+        </header>
 
-<main class="main">
-  <div class="stats-row" id="statsRow"></div>
+        <div id="error-container"></div>
 
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchBox" placeholder="Search project / SKU…" oninput="renderTable()"/>
-      </div>
-      <select class="filter-select" id="filterStatus" onchange="renderTable()">
-        <option value="">All Statuses</option>
-        <option value="On-going">On-going</option>
-        <option value="Finish / Drop">Finish / Drop</option>
-        <option value="Under Discussion">Under Discussion</option>
-      </select>
-      <select class="filter-select" id="filterResult" onchange="renderTable()">
-        <option value="">All Results</option>
-        <option value="Pass">Pass</option>
-        <option value="Fail">Fail</option>
-        <option value="Pending">Pending</option>
-      </select>
-      <select class="filter-select" id="filterStorage" onchange="renderTable()">
-        <option value="">All Storage</option>
-        <option value="Frozen">Frozen</option>
-        <option value="Ambient">Ambient</option>
-        <option value="Chill">Chill</option>
-        <option value="Mix FRZ-AMB">Mix FRZ-AMB</option>
-      </select>
-    </div>
-    <span id="rowCount" style="font-size:.82rem;color:var(--text-muted);align-self:center;"></span>
-  </div>
-
-  <div class="table-card">
-    <div class="table-header">
-      <div class="table-header-left">
-        <h2>Project Register</h2>
-        <p>All 2026 projects — click Edit / Delete to manage entries</p>
-      </div>
-    </div>
-    <div class="table-scroll">
-      <table id="projectTable">
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Project / SKU Name</th>
-            <th>SKU Code</th>
-            <th>Storage</th>
-            <th>Status</th>
-            <th>Q4 '25</th>
-            <th>JAN</th><th>FEB</th><th>MAR</th><th>APR</th><th>MAY</th><th>JUN</th>
-            <th>JUL</th><th>AUG</th><th>SEP</th><th>OCT</th><th>NOV</th><th>DEC</th>
-            <th>Batch/Lot</th>
-            <th>Last Update</th>
-            <th>Testing Status</th>
-            <th>Latest Report</th>
-            <th>Latest Result</th>
-            <th>Note</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-    </div>
-  </div>
-</main>
-
-<!-- Add/Edit Modal -->
-<div class="modal-overlay" id="projectModal">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 id="modalTitle">Add New Project</h3>
-      <button class="modal-close" onclick="closeModal('projectModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-section-title">📁 Project Info</div>
-        <div class="form-group"><label>No. (e.g. 1.1)</label><input type="text" id="f_no" placeholder="1.1"/></div>
-        <div class="form-group"><label>Project / SKU Name *</label><input type="text" id="f_name" placeholder="e.g. Frozen Noey Sod Bun"/></div>
-        <div class="form-group"><label>SKU Code</label><input type="text" id="f_sku" placeholder="e.g. 03-EX049"/></div>
-        <div class="form-group"><label>Storage Condition</label>
-          <select id="f_storage">
-            <option value="Frozen">Frozen</option>
-            <option value="Ambient">Ambient</option>
-            <option value="Chill">Chill</option>
-            <option value="Mix FRZ-AMB">Mix FRZ-AMB</option>
-            <option value="-">- (N/A)</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div class="form-group"><label>Project Status</label>
-          <select id="f_status">
-            <option value="On-going">On-going</option>
-            <option value="Finish / Drop">Finish / Drop</option>
-            <option value="Under Discussion">Under Discussion</option>
-          </select>
-        </div>
-        <div class="form-group"><label>Category Group</label><input type="text" id="f_cat" placeholder="e.g. Shelf Life Extending and Testing"/></div>
-
-        <div class="form-section-title">📅 Timeline (Q4 2025 → DEC 2026)</div>
-        <div class="tl-form-grid">
-          <div class="tl-form-item"><label>Q4 2025</label><input type="text" id="tl_q4" placeholder="242days"/></div>
-          <div class="tl-form-item"><label>JAN 26</label><input type="text" id="tl_jan"/></div>
-          <div class="tl-form-item"><label>FEB 26</label><input type="text" id="tl_feb"/></div>
-          <div class="tl-form-item"><label>MAR 26</label><input type="text" id="tl_mar"/></div>
-          <div class="tl-form-item"><label>APR 26</label><input type="text" id="tl_apr"/></div>
-          <div class="tl-form-item"><label>MAY 26</label><input type="text" id="tl_may"/></div>
-          <div class="tl-form-item"><label>JUN 26</label><input type="text" id="tl_jun"/></div>
-          <div class="tl-form-item"><label>JUL 26</label><input type="text" id="tl_jul"/></div>
-          <div class="tl-form-item"><label>AUG 26</label><input type="text" id="tl_aug"/></div>
-          <div class="tl-form-item"><label>SEP 26</label><input type="text" id="tl_sep"/></div>
-          <div class="tl-form-item"><label>OCT 26</label><input type="text" id="tl_oct"/></div>
-          <div class="tl-form-item"><label>NOV 26</label><input type="text" id="tl_nov"/></div>
-          <div class="tl-form-item"><label>DEC 26</label><input type="text" id="tl_dec"/></div>
+        <div class="controls-panel">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="🔍 Search by Project Name or SKU...">
+            </div>
+            <div class="filter-group">
+                <select id="status-filter">
+                    <option value="">All Project Status</option>
+                    <option value="On-going">On-going</option>
+                    <option value="Finish / Drop">Finish / Drop</option>
+                </select>
+                <select id="result-filter">
+                    <option value="">All Test Results</option>
+                    <option value="Pass">Pass</option>
+                    <option value="Fail">Fail</option>
+                    <option value="Pending">Pending</option>
+                </select>
+            </div>
+            <div class="status-summary" id="status-summary">
+                Loading projects...
+            </div>
         </div>
 
-        <div class="form-section-title">🔬 Testing Progress</div>
-        <div class="form-group"><label>Batch / Lot</label><input type="text" id="f_batch" placeholder="e.g. B001"/></div>
-        <div class="form-group"><label>Last Update (Date)</label><input type="date" id="f_lastUpdate"/></div>
-        <div class="form-group"><label>Testing Status</label>
-          <select id="f_testStatus">
-            <option value="">— None —</option>
-            <option value="Pending">Pending</option>
-            <option value="In progress">In progress</option>
-            <option value="Sent testing result">Sent testing result</option>
-            <option value="Wait for testing">Wait for testing</option>
-          </select>
+        <div class="table-container">
+            <table id="projects-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2" style="width: 50px;">No.</th>
+                        <th rowspan="2">Project / SKU Name</th>
+                        <th rowspan="2">Storage Condition</th>
+                        <th rowspan="2">Project Status</th>
+                        <th class="timeline-header" colspan="13">Timeline & Schedule</th>
+                        <th rowspan="2">Batch/Lot</th>
+                        <th rowspan="2">Last Update</th>
+                        <th rowspan="2">Testing Status</th>
+                        <th rowspan="2">Latest Report</th>
+                        <th rowspan="2">Latest Result</th>
+                        <th rowspan="2">Note</th>
+                    </tr>
+                    <tr>
+                        <th class="month-header">Q4 25</th>
+                        <th class="month-header">Jan</th>
+                        <th class="month-header">Feb</th>
+                        <th class="month-header">Mar</th>
+                        <th class="month-header">Apr</th>
+                        <th class="month-header">May</th>
+                        <th class="month-header">Jun</th>
+                        <th class="month-header">Jul</th>
+                        <th class="month-header">Aug</th>
+                        <th class="month-header">Sep</th>
+                        <th class="month-header">Oct</th>
+                        <th class="month-header">Nov</th>
+                        <th class="month-header">Dec</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <tr>
+                        <td colspan="23" class="loading-overlay">⏳ Loading project data from Google Sheets...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="form-group"><label>Latest Result</label>
-          <select id="f_result">
-            <option value="Pending">Pending</option>
-            <option value="Pass">Pass</option>
-            <option value="Fail">Fail</option>
-          </select>
-        </div>
-        <div class="form-group form-full"><label>Latest Report URL</label><input type="url" id="f_reportUrl" placeholder="https://…"/></div>
-        <div class="form-group form-full"><label>Note / Remarks</label><textarea id="f_note" placeholder="General remarks…"></textarea></div>
-      </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-cancel" onclick="closeModal('projectModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveProject()">💾 Save Project</button>
-    </div>
-  </div>
-</div>
 
-<!-- Confirm Delete Modal -->
-<div class="modal-overlay" id="confirmModal">
-  <div class="modal confirm-modal">
-    <div class="modal-head">
-      <h3>Confirm Delete</h3>
-      <button class="modal-close" onclick="closeModal('confirmModal')">✕</button>
-    </div>
-    <div class="confirm-body">
-      <div class="confirm-icon">🗑️</div>
-      <h4>Delete this project?</h4>
-      <p id="confirmMsg">This action cannot be undone.</p>
-    </div>
-    <div class="modal-foot" style="justify-content:center;">
-      <button class="btn btn-cancel" onclick="closeModal('confirmModal')">Cancel</button>
-      <button class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
-    </div>
-  </div>
-</div>
+    <script>
+        // เผยแพร่ลิงก์สเปรดชีตในรูปแบบ CSV อัตโนมัติเรียบร้อยค่ะ
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/1T-IO8vaICg_ESWwPMmNKpK8F1FS8Mi9Oc9r_LFGVMqU/pub?gid=1071677952&output=csv';
 
-<!-- Export Modal -->
-<div class="modal-overlay" id="exportModal">
-  <div class="modal" style="max-width:320px;">
-    <div class="modal-head">
-      <h3>Export Data</h3>
-      <button class="modal-close" onclick="closeModal('exportModal')">✕</button>
-    </div>
-    <div style="padding:22px 24px;display:flex;flex-direction:column;gap:12px;">
-      <button class="btn btn-primary" onclick="exportJSON()">📄 Export as JSON</button>
-      <button class="btn btn-primary" onclick="exportCSV()">📊 Export as CSV</button>
-    </div>
-    <div class="modal-foot"><button class="btn btn-cancel" onclick="closeModal('exportModal')">Close</button></div>
-  </div>
-</div>
+        let rawProjectsData = [];
 
-<div class="toast-container" id="toastContainer"></div>
+        // ฟังก์ชันดึงข้อมูลจาก Google Sheets
+        async function fetchSheetData() {
+            try {
+                const response = await fetch(sheetUrl);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const csvText = await response.text();
+                parseCSV(csvText);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('error-container').innerHTML = `
+                    <div class="error-message">
+                        <strong>❌ Error:</strong> Could not load data from Google Sheets. Please ensure that the sheet is "Published to Web" as CSV and the URL is correct.
+                    </div>
+                `;
+                document.getElementById('table-body').innerHTML = `<tr><td colspan="23" class="text-center" style="color: red; padding: 20px;">Failed to load data.</td></tr>`;
+            }
+        }
 
-<script>
-/* ═══════════ DATA ═══════════ */
-const STORAGE_KEY = 'ipProdDevProjects_v2';
-const TL_KEYS   = ['q4','jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+        // ฟังก์ชันแปลงข้อมูล CSV เป็น Array
+        function parseCSV(text) {
+            // แตกบรรทัดด้วย Regex ป้องกันปัญหากรณีมีคอมม่าใน Note
+            const lines = text.split(/\r?\n/);
+            if (lines.length < 3) return; // ไม่มีข้อมูลเพียงพอ
 
-// Category group definitions — rows before their items
-const CATEGORIES = {
-  '1':  'Shelf Life Extending and Testing',
-  '2':  'Recipe and Product Developing',
-  '3':  'Reimagined After You Original Menu (for Overseas Stores)',
-};
+            const projects = [];
 
-function uid(){ return '_'+Math.random().toString(36).substr(2,9); }
+            // เริ่มอ่านตั้งแต่แถวที่ 3 (ดัชนีที่ 2) เพราะแถว 1-2 เป็นหัวข้อตารางแบบควบช่อง
+            for (let i = 2; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
 
-// ── Your real project data from Google Sheets ──
-const INITIAL_DATA = [
-  // ── Group 1 ──
-  { id:uid(), cat:'1', no:'1.1',  name:'Frozen Noey Sod Bun (Frozen Butter Bun With Butter Cream)',     sku:'03-EX049', storage:'Frozen',      status:'On-going',          timeline:{q4:'242days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2025-05-11', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'' },
-  { id:uid(), cat:'1', no:'1.2',  name:'Frozen Nom Sod Bun (Frozen Butter Bun With Milk Cream)',         sku:'03-EX050', storage:'Frozen',      status:'On-going',          timeline:{q4:'242days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2025-05-11', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'' },
-  { id:uid(), cat:'1', no:'1.3',  name:'Frozen Noey Sod Bun Strawberry Cream Flavored',                  sku:'03-EX051', storage:'Frozen',      status:'Finish / Drop',     timeline:{q4:'120 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-02-09', testStatus:'Sent testing result', reportUrl:'', result:'Fail', note:'' },
-  { id:uid(), cat:'1', no:'1.4',  name:'Chicken Floss and Salad Cream Bun',                              sku:'03-EX066', storage:'Frozen',      status:'On-going',          timeline:{q4:'208 days',jan:'',feb:'',mar:'',apr:'',may:'239 days',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',  lastUpdate:'2026-05-28', testStatus:'Wait for testing',   reportUrl:'', result:'Pass', note:'' },
-  { id:uid(), cat:'1', no:'1.5',  name:'Palm Sugar Butter Bun',                                          sku:'N/A',      storage:'Frozen',      status:'Finish / Drop',     timeline:{q4:'117 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-03-02', testStatus:'Sent testing result', reportUrl:'', result:'Fail', note:'' },
-  { id:uid(), cat:'1', no:'1.6',  name:'Young Coconut Custard Bun',                                      sku:'N/A',      storage:'Frozen',      status:'Finish / Drop',     timeline:{q4:'70 days', jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',        lastUpdate:'2026-03-12', testStatus:'Sent testing result', reportUrl:'', result:'Fail', note:'' },
-  { id:uid(), cat:'1', no:'1.7',  name:'Mochi Thai Tea Bun',                                             sku:'N/A',      storage:'Frozen',      status:'On-going',          timeline:{q4:'208 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-05-11', testStatus:'Sent testing result', reportUrl:'', result:'Fail', note:'' },
-  { id:uid(), cat:'1', no:'1.8',  name:'Mango Sticky Rice Bun',                                          sku:'03-EX065', storage:'Frozen',      status:'On-going',          timeline:{q4:'179 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-05-19', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'' },
-  { id:uid(), cat:'1', no:'1.9',  name:'2 pcs. Butter Bun (1st dev package, Plastic tray) | BD Export', sku:'N/A',      storage:'Frozen',      status:'On-going',          timeline:{q4:'',        jan:'',feb:'132 days',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',   lastUpdate:'2026-05-21', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'Once finished the testing, share the result to BD' },
-  { id:uid(), cat:'1', no:'1.10', name:'2 pcs. Butter Bun (Approved package, Plastic tray) | BD Export', sku:'N/A',     storage:'Frozen',      status:'On-going',          timeline:{q4:'',        jan:'',feb:'',mar:'',apr:'',may:'',jun:'60 days',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',    lastUpdate:'2026-05-04', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'Once finished the testing, share the result to BD' },
-  { id:uid(), cat:'1', no:'1.11', name:'2 pcs. Milk Bun (Approved package, Plastic tray) | BD Export',   sku:'N/A',     storage:'Frozen',      status:'On-going',          timeline:{q4:'',        jan:'',feb:'',mar:'',apr:'',may:'',jun:'60 days',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',    lastUpdate:'2026-05-04', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'Once finished the testing, share the result to BD' },
-  { id:uid(), cat:'1', no:'1.12', name:'2 pcs. Strawberry Bun (Approved package, Plastic tray) | BD Export', sku:'N/A',storage:'Frozen',      status:'On-going',          timeline:{q4:'',        jan:'',feb:'',mar:'',apr:'',may:'',jun:'60 days',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',    lastUpdate:'2026-05-04', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'Once finished the testing, share the result to BD' },
-  { id:uid(), cat:'1', no:'1.13', name:'Caramel Waffle (MTL, Single piece)',                              sku:'N/A',      storage:'Frozen',      status:'On-going',          timeline:{q4:'211 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-04-27', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'' },
-  { id:uid(), cat:'1', no:'1.14', name:'Carrot Cake (Mini tray)',                                         sku:'N/A',      storage:'Frozen',      status:'Finish / Drop',     timeline:{q4:'207 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'238 days',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',  lastUpdate:'2026-05-28', testStatus:'Wait for testing',   reportUrl:'', result:'Pass', note:'Khun May has asked for a new deeper mold.' },
-  { id:uid(), cat:'1', no:'1.15', name:'Banana Cake (Xanthan, Mini tray)',                                sku:'N/A',      storage:'Frozen',      status:'Finish / Drop',     timeline:{q4:'120 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-03-26', testStatus:'',                   reportUrl:'', result:'Fail', note:'' },
-  { id:uid(), cat:'1', no:'1.16', name:'Frozen Cream Flavor Topping Premix (Fresh Cream base)',           sku:'03-EX038', storage:'Frozen',      status:'Finish / Drop',     timeline:{q4:'300 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-05-19', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'' },
-  { id:uid(), cat:'1', no:'1.17', name:'Shibuya Honey Syrup',                                             sku:'03-EX009', storage:'Ambient',     status:'On-going',          timeline:{q4:'240 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'' },
-  { id:uid(), cat:'1', no:'1.18', name:'Chocolate Sauce',                                                 sku:'03-EX010', storage:'Ambient',     status:'On-going',          timeline:{q4:'240 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'' },
-  { id:uid(), cat:'1', no:'1.19', name:'Praline Sauce',                                                   sku:'03-EX012', storage:'Ambient',     status:'On-going',          timeline:{q4:'240 days',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'' },
-  { id:uid(), cat:'1', no:'1.20', name:'Frozen Chocolate Mud Brownie | BD Export project',                sku:'N/A',      storage:'Frozen',      status:'On-going',          timeline:{q4:'',        jan:'',feb:'',mar:'',apr:'',may:'118days',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',   lastUpdate:'2026-05-11', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'Once finished the testing, share the result to BD' },
-  { id:uid(), cat:'1', no:'1.21', name:'Frozen Banana Caramel Cake | BD Export project',                  sku:'N/A',      storage:'Frozen',      status:'On-going',          timeline:{q4:'',        jan:'',feb:'',mar:'',apr:'',may:'118 days',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',  lastUpdate:'2026-05-11', testStatus:'Sent testing result', reportUrl:'', result:'Fail', note:'Once finished the testing, share the result to BD' },
-  // ── Group 2 ──
-  { id:uid(), cat:'2', no:'2.1',  name:'Hojicha Milk Ice Premix',                                         sku:'N/A',      storage:'Frozen',      status:'On-going',          timeline:{q4:'Pass: Sensory',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',   lastUpdate:'2026-03-30', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'' },
-  { id:uid(), cat:'2', no:'2.2',  name:'Thai Tea Milk Ice Premix',                                        sku:'N/A',      storage:'Frozen',      status:'On-going',          timeline:{q4:'Under dev',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-04-23', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'The product failed the latest testing due to the weakened aroma' },
-  { id:uid(), cat:'2', no:'2.3',  name:'Milk Ice Premix',                                                 sku:'N/A',      storage:'Frozen',      status:'On-going',          timeline:{q4:'',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',                lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'' },
-  { id:uid(), cat:'2', no:'2.4',  name:'Cheddar Cheese Sauce Premix',                                     sku:'N/A',      storage:'Ambient',     status:'Under Discussion',  timeline:{q4:'',jan:'',feb:'',mar:'',apr:'',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',                lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'The sauce will no longer at AUT, ask Khun May if she still wants to continue on IP project' },
-  { id:uid(), cat:'2', no:'2.5',  name:'Premix Cream Sauce (C7.1)',                                       sku:'N/A',      storage:'Mix FRZ-AMB', status:'On-going',          timeline:{q4:'',jan:'',feb:'',mar:'',apr:'',may:'',jun:'Pass: Sensory',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',   lastUpdate:'2026-05-11', testStatus:'Sent testing result', reportUrl:'', result:'Pass', note:'C7.1 has passed the testing, although C8 showed a weaker aroma.' },
-  { id:uid(), cat:'2', no:'2.6',  name:'Premix Coconut Milk Sauce',                                       sku:'N/A',      storage:'Mix FRZ-AMB', status:'On-going',          timeline:{q4:'',jan:'',feb:'',mar:'',apr:'',may:'',jun:'Under dev',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-05-11', testStatus:'Sent testing result', reportUrl:'', result:'Fail', note:'Not passed. The sauce lacks coconut milk aroma, and the smell is completely lost after preparation for operational use.' },
-  { id:uid(), cat:'2', no:'2.7',  name:'Premix Strawberry Kakigori Sauce',                                sku:'N/A',      storage:'Mix FRZ-AMB', status:'On-going',          timeline:{q4:'',jan:'',feb:'',mar:'',apr:'',may:'',jun:'Under dev',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',       lastUpdate:'2026-05-19', testStatus:'Sent testing result', reportUrl:'', result:'Fail', note:'Not passed. Khun May requested a stronger strawberry aroma. The color is paler than the control, and the texture became bubbly due to blending.' },
-  { id:uid(), cat:'2', no:'2.8',  name:'Pandan Mochi Premix',                                             sku:'03-FI059', storage:'Ambient',     status:'Under Discussion',  timeline:{q4:'',jan:'',feb:'',mar:'',apr:'Under dev',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',      lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'' },
-  // ── Group 3 ──
-  { id:uid(), cat:'3', no:'3.1',  name:'Toast Category',                                                  sku:'-',        storage:'-',           status:'Under Discussion',  timeline:{q4:'',jan:'',feb:'',mar:'',apr:'Under dis.',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',      lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'' },
-  { id:uid(), cat:'3', no:'3.2',  name:'Signature Dessert Category',                                      sku:'-',        storage:'-',           status:'Under Discussion',  timeline:{q4:'',jan:'',feb:'',mar:'',apr:'Under dis.',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',      lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'' },
-  { id:uid(), cat:'3', no:'3.3',  name:'Kakigori Category',                                               sku:'-',        storage:'-',           status:'Under Discussion',  timeline:{q4:'',jan:'',feb:'',mar:'',apr:'Under dis.',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',      lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'' },
-  { id:uid(), cat:'3', no:'3.4',  name:'Beverage Category',                                               sku:'-',        storage:'-',           status:'Under Discussion',  timeline:{q4:'',jan:'',feb:'',mar:'',apr:'Under dis.',may:'',jun:'',jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}, batch:'',      lastUpdate:'',           testStatus:'',                   reportUrl:'', result:'Pending', note:'' },
-];
+                const row = parseCSVRow(lines[i]);
+                
+                // ตรวจสอบความสมบูรณ์ขั้นต่ำ (ต้องมี No. หรือชื่อโปรเจกต์)
+                if (row.length > 1 && (row[0] || row[1])) {
+                    projects.push({
+                        no: row[0] || '',
+                        name: row[1] || '',
+                        storage: row[2] || '',
+                        status: row[3] || 'On-going',
+                        // ลำดับช่องไทม์ไลน์รายเดือน (Q4 25 จนถึง Dec 2026 ทั้งหมด 13 ช่อง)
+                        timeline: {
+                            q4_25: row[4] || '', jan: row[5] || '', feb: row[6] || '', mar: row[7] || '',
+                            apr: row[8] || '', may: row[9] || '', jun: row[10] || '', jul: row[11] || '',
+                            aug: row[12] || '', sep: row[13] || '', oct: row[14] || '', nov: row[15] || '', dec: row[16] || ''
+                        },
+                        batch: row[17] || '',
+                        lastUpdate: row[18] || '',
+                        testingStatus: row[19] || '',
+                        reportUrl: row[20] || '',
+                        result: row[21] || 'Pending',
+                        note: row[22] || ''
+                    });
+                }
+            }
 
-function loadProjects(){
-  try{
-    const raw=localStorage.getItem(STORAGE_KEY);
-    if(raw){const p=JSON.parse(raw);if(p&&p.length)return p;}
-  }catch(e){}
-  const init=JSON.parse(JSON.stringify(INITIAL_DATA));
-  saveProjects(init);
-  return init;
-}
-function saveProjects(list){ localStorage.setItem(STORAGE_KEY,JSON.stringify(list)); }
+            rawProjectsData = projects;
+            renderTable(rawProjectsData);
+            setupEventListeners();
+        }
 
-let projects=loadProjects();
-let editingId=null;
+        // ฟังก์ชันช่วยจัดรูปแบบข้อมูลแถว CSV
+        function parseCSVRow(text) {
+            let p = '', r = [];
+            let q = false;
+            for (let i = 0; i < text.length; i++) {
+                let c = text[i];
+                if (c === '"') { q = !q; }
+                else if (c === ',' && !q) { r.push(p.trim()); p = ''; }
+                else { p += c; }
+            }
+            r.push(p.trim());
+            return r;
+        }
 
-/* ═══════════ RENDER ═══════════ */
-function renderStats(){
-  const total   =projects.length;
-  const ongoing =projects.filter(p=>p.status==='On-going').length;
-  const finished=projects.filter(p=>p.status==='Finish / Drop').length;
-  const discuss =projects.filter(p=>p.status==='Under Discussion').length;
-  const passed  =projects.filter(p=>p.result==='Pass').length;
-  const failed  =projects.filter(p=>p.result==='Fail').length;
-  document.getElementById('statsRow').innerHTML=`
-    <div class="stat-card"><div class="stat-icon navy">📋</div><div><div class="stat-label">Total Projects</div><div class="stat-value">${total}</div></div></div>
-    <div class="stat-card"><div class="stat-icon blue">🔄</div><div><div class="stat-label">On-going</div><div class="stat-value">${ongoing}</div></div></div>
-    <div class="stat-card"><div class="stat-icon red">📁</div><div><div class="stat-label">Finish / Drop</div><div class="stat-value">${finished}</div></div></div>
-    <div class="stat-card"><div class="stat-icon amber">💬</div><div><div class="stat-label">Under Discussion</div><div class="stat-value">${discuss}</div></div></div>
-    <div class="stat-card"><div class="stat-icon green">✅</div><div><div class="stat-label">Pass</div><div class="stat-value">${passed}</div></div></div>
-    <div class="stat-card"><div class="stat-icon red">❌</div><div><div class="stat-label">Fail</div><div class="stat-value">${failed}</div></div></div>`;
-}
+        // ฟังก์ชันวาดตารางข้อมูลและสถานะลงหน้าเว็บ
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
 
-function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="23" class="text-center" style="padding: 30px; color: #64748b;">🔍 No matching projects found.</td></tr>`;
+                updateSummary(0);
+                return;
+            }
 
-function renderTable(){
-  const q        =document.getElementById('searchBox').value.toLowerCase();
-  const fStat    =document.getElementById('filterStatus').value;
-  const fRes     =document.getElementById('filterResult').value;
-  const fStorage =document.getElementById('filterStorage').value;
+            data.forEach(proj => {
+                const tr = document.createElement('tr');
 
-  let filtered=projects.filter(p=>{
-    const mQ  =!q||(p.name||'').toLowerCase().includes(q)||(p.no||'').toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q);
-    const mSt =!fStat||p.status===fStat;
-    const mRes=!fRes ||p.result===fRes;
-    const mStr=!fStorage||p.storage===fStorage;
-    return mQ&&mSt&&mRes&&mStr;
-  });
+                // จัดการแต่ง Badge สีตามเงื่อนไขความคืบหน้า
+                const statusClass = proj.status.toLowerCase().includes('finish') ? 'badge-finish' : 'badge-ongoing';
+                
+                let resultClass = 'badge-pending';
+                if (proj.result.toLowerCase() === 'pass') resultClass = 'badge-pass';
+                if (proj.result.toLowerCase() === 'fail') resultClass = 'badge-fail';
 
-  document.getElementById('rowCount').textContent=`${filtered.length} of ${projects.length} entries`;
+                // จัดการปุ่มลิงก์รายงานล่าสุด (Latest Report)
+                let reportBtn = '';
+                if (proj.reportUrl && proj.reportUrl.startsWith('http')) {
+                    reportBtn = `<a href="${proj.reportUrl}" target="_blank" class="btn-report">🔗 View</a>`;
+                } else if (proj.reportUrl) {
+                    reportBtn = `<span style="color: #94a3b8; font-size:11px;">${proj.reportUrl}</span>`;
+                } else {
+                    reportBtn = `<span style="color: #cbd5e1;">-</span>`;
+                }
 
-  const tbody=document.getElementById('tableBody');
-  if(!filtered.length){
-    tbody.innerHTML=`<tr><td colspan="25"><div class="empty-state"><div class="empty-icon">🔍</div><p>No projects match your search or filters.</p></div></td></tr>`;
-    return;
-  }
+                tr.innerHTML = `
+                    <td class="text-center" style="font-weight: 500;">${proj.no}</td>
+                    <td style="font-weight: 600; color: #1e293b;">${proj.name}</td>
+                    <td class="storage-tag">${proj.storage}</td>
+                    <td><span class="badge ${statusClass}">${proj.status}</span></td>
+                    
+                    <td class="timeline-cell">${proj.timeline.q4_25}</td>
+                    <td class="timeline-cell">${proj.timeline.jan}</td>
+                    <td class="timeline-cell">${proj.timeline.feb}</td>
+                    <td class="timeline-cell">${proj.timeline.mar}</td>
+                    <td class="timeline-cell">${proj.timeline.apr}</td>
+                    <td class="timeline-cell">${proj.timeline.may}</td>
+                    <td class="timeline-cell">${proj.timeline.jun}</td>
+                    <td class="timeline-cell">${proj.timeline.jul}</td>
+                    <td class="timeline-cell">${proj.timeline.aug}</td>
+                    <td class="timeline-cell">${proj.timeline.sep}</td>
+                    <td class="timeline-cell">${proj.timeline.oct}</td>
+                    <td class="timeline-cell">${proj.timeline.nov}</td>
+                    <td class="timeline-cell">${proj.timeline.dec}</td>
+                    
+                    <td>${proj.batch}</td>
+                    <td>${proj.lastUpdate}</td>
+                    <td>${proj.testingStatus}</td>
+                    <td class="text-center">${reportBtn}</td>
+                    <td><span class="badge ${resultClass}">${proj.result}</span></td>
+                    <td style="white-space: normal; min-width: 150px; font-size: 12px; color: #64748b;">${proj.note}</td>
+                `;
+                tbody.appendChild(tr);
+            });
 
-  let html='';
-  let lastCat='';
+            updateSummary(data.length);
+        }
 
-  filtered.forEach(p=>{
-    // Insert category header row when group changes
-    const catKey=p.cat||'';
-    if(catKey&&catKey!==lastCat&&CATEGORIES[catKey]){
-      const catLabel=`${catKey}. ${CATEGORIES[catKey]}`;
-      html+=`<tr class="cat-row"><td colspan="25">🗂 ${escHtml(catLabel)}</td></tr>`;
-      lastCat=catKey;
-    }
+        // ฟังก์ชันอัปเดตสรุปยอดโครงการ
+        function updateSummary(count) {
+            document.getElementById('status-summary').textContent = `📊 Showing ${count} Projects`;
+        }
 
-    const tl=p.timeline||{};
-    const tlCells=TL_KEYS.map(k=>{
-      const v=tl[k]||'';
-      return `<td class="tl-cell">${v?`<span class="tl-val">${escHtml(v)}</span>`:'<span class="tl-dot"></span>'}</td>`;
-    }).join('');
+        // ฟังก์ชันระบบค้นหาแบบ Real-time และระบบตัวกรอง
+        function setupEventListeners() {
+            const searchInput = document.getElementById('search-input');
+            const statusFilter = document.getElementById('status-filter');
+            const resultFilter = document.getElementById('result-filter');
 
-    const statusBadge=
-      p.status==='On-going'         ?`<span class="badge badge-ongoing">🔄 On-going</span>`:
-      p.status==='Finish / Drop'    ?`<span class="badge badge-drop">📁 Finish / Drop</span>`:
-      p.status==='Under Discussion' ?`<span class="badge badge-discuss">💬 Under Discussion</span>`:
-      `<span class="badge badge-pending">${escHtml(p.status)}</span>`;
+            function filterData() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const selectedStatus = statusFilter.value;
+                const selectedResult = resultFilter.value;
 
-    const resultBadge=
-      p.result==='Pass'   ?`<span class="badge badge-pass">✅ Pass</span>`:
-      p.result==='Fail'   ?`<span class="badge badge-fail">❌ Fail</span>`:
-                           `<span class="badge badge-pending">⏳ Pending</span>`;
+                const filtered = rawProjectsData.filter(proj => {
+                    const matchesSearch = proj.name.toLowerCase().includes(searchTerm) || proj.no.toLowerCase().includes(searchTerm);
+                    const matchesStatus = selectedStatus === '' || proj.status === selectedStatus;
+                    const matchesResult = selectedResult === '' || proj.result === selectedResult;
 
-    const testBadge=
-      p.testStatus==='Sent testing result'?`<span class="badge badge-sent" style="font-size:.7rem">📤 Sent result</span>`:
-      p.testStatus==='Wait for testing'   ?`<span class="badge badge-wait" style="font-size:.7rem">⏳ Wait testing</span>`:
-      p.testStatus==='In progress'        ?`<span class="badge badge-inprog" style="font-size:.7rem">🔬 In progress</span>`:
-      p.testStatus==='Pending'            ?`<span class="badge badge-pending" style="font-size:.7rem">⏳ Pending</span>`:
-      `<span style="color:var(--text-light);font-size:.75rem">—</span>`;
+                    return matchesSearch && matchesStatus && matchesResult;
+                });
 
-    const reportBtn=p.reportUrl
-      ?`<a href="${escHtml(p.reportUrl)}" target="_blank" rel="noopener noreferrer" class="btn-view">📄 View</a>`
-      :`<span style="color:var(--text-light);font-size:.75rem">—</span>`;
+                renderTable(filtered);
+            }
 
-    const fmtDate=d=>{if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'});}catch{return d;}};
+            searchInput.addEventListener('input', filterData);
+            statusFilter.addEventListener('change', filterData);
+            resultFilter.addEventListener('change', filterData);
+        }
 
-    html+=`<tr>
-      <td class="td-no">${escHtml(p.no)}</td>
-      <td class="td-name">${escHtml(p.name)}</td>
-      <td class="td-sku">${escHtml(p.sku||'—')}</td>
-      <td class="td-cond">${escHtml(p.storage||'—')}</td>
-      <td>${statusBadge}</td>
-      ${tlCells}
-      <td class="td-batch">${escHtml(p.batch||'—')}</td>
-      <td class="td-date">${fmtDate(p.lastUpdate)}</td>
-      <td>${testBadge}</td>
-      <td>${reportBtn}</td>
-      <td>${resultBadge}</td>
-      <td class="td-note">${escHtml(p.note||'')}</td>
-      <td><div class="actions-cell">
-        <button class="btn btn-sm btn-edit" onclick="openEditModal('${p.id}')">✏️ Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="confirmDelete('${p.id}')">🗑️</button>
-      </div></td>
-    </tr>`;
-  });
-
-  tbody.innerHTML=html;
-}
-
-function render(){ renderStats(); renderTable(); }
-
-/* ═══════════ MODALS ═══════════ */
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
-
-function clearForm(){
-  ['f_no','f_name','f_sku','f_batch','f_reportUrl','f_note','f_cat'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('f_storage').value='Frozen';
-  document.getElementById('f_status').value='On-going';
-  document.getElementById('f_testStatus').value='';
-  document.getElementById('f_result').value='Pending';
-  document.getElementById('f_lastUpdate').value='';
-  TL_KEYS.forEach(k=>{const el=document.getElementById('tl_'+k);if(el)el.value='';});
-}
-
-function openAddModal(){
-  editingId=null; clearForm();
-  document.getElementById('modalTitle').textContent='Add New Project';
-  openModal('projectModal');
-}
-
-function openEditModal(id){
-  const p=projects.find(x=>x.id===id); if(!p) return;
-  editingId=id;
-  document.getElementById('f_no').value        =p.no||'';
-  document.getElementById('f_name').value      =p.name||'';
-  document.getElementById('f_sku').value       =p.sku||'';
-  document.getElementById('f_storage').value   =p.storage||'Frozen';
-  document.getElementById('f_status').value    =p.status||'On-going';
-  document.getElementById('f_cat').value       =p.cat||'';
-  document.getElementById('f_batch').value     =p.batch||'';
-  document.getElementById('f_lastUpdate').value=p.lastUpdate||'';
-  document.getElementById('f_testStatus').value=p.testStatus||'';
-  document.getElementById('f_reportUrl').value =p.reportUrl||'';
-  document.getElementById('f_result').value    =p.result||'Pending';
-  document.getElementById('f_note').value      =p.note||'';
-  const tl=p.timeline||{};
-  TL_KEYS.forEach(k=>{const el=document.getElementById('tl_'+k);if(el)el.value=tl[k]||'';});
-  document.getElementById('modalTitle').textContent='✏️ Edit Project';
-  openModal('projectModal');
-}
-
-function saveProject(){
-  const name=document.getElementById('f_name').value.trim();
-  if(!name){showToast('Project name is required.','error');return;}
-  const tl={};
-  TL_KEYS.forEach(k=>{tl[k]=(document.getElementById('tl_'+k)||{}).value||'';});
-  const data={
-    no:         document.getElementById('f_no').value.trim(),
-    name,
-    sku:        document.getElementById('f_sku').value.trim(),
-    storage:    document.getElementById('f_storage').value,
-    status:     document.getElementById('f_status').value,
-    cat:        document.getElementById('f_cat').value.trim(),
-    timeline:   tl,
-    batch:      document.getElementById('f_batch').value.trim(),
-    lastUpdate: document.getElementById('f_lastUpdate').value,
-    testStatus: document.getElementById('f_testStatus').value,
-    reportUrl:  document.getElementById('f_reportUrl').value.trim(),
-    result:     document.getElementById('f_result').value,
-    note:       document.getElementById('f_note').value.trim(),
-  };
-  if(editingId){
-    const idx=projects.findIndex(p=>p.id===editingId);
-    if(idx>-1)projects[idx]={...projects[idx],...data};
-    showToast('Project updated.','success');
-  } else {
-    projects.push({id:uid(),...data});
-    showToast('Project added.','success');
-  }
-  saveProjects(projects); closeModal('projectModal'); render();
-}
-
-/* ═══════════ DELETE ═══════════ */
-let deleteTargetId=null;
-function confirmDelete(id){
-  deleteTargetId=id;
-  const p=projects.find(x=>x.id===id);
-  document.getElementById('confirmMsg').textContent=`"${p?p.name:''}" will be permanently deleted.`;
-  document.getElementById('confirmDeleteBtn').onclick=doDelete;
-  openModal('confirmModal');
-}
-function doDelete(){
-  projects=projects.filter(p=>p.id!==deleteTargetId);
-  saveProjects(projects); closeModal('confirmModal');
-  showToast('Project deleted.','info'); render();
-}
-
-/* ═══════════ EXPORT ═══════════ */
-function exportJSON(){
-  const blob=new Blob([JSON.stringify(projects,null,2)],{type:'application/json'});
-  downloadBlob(blob,'ip_product_projects_2026.json'); closeModal('exportModal');
-  showToast('Exported as JSON.','success');
-}
-function exportCSV(){
-  const cols=['no','name','sku','storage','status','cat',...TL_KEYS,'batch','lastUpdate','testStatus','reportUrl','result','note'];
-  const header=cols.join(',');
-  const rows=projects.map(p=>cols.map(c=>{
-    const val=TL_KEYS.includes(c)?(p.timeline||{})[c]||'':(p[c]||'');
-    return `"${String(val).replace(/"/g,'""')}"`;
-  }).join(','));
-  const blob=new Blob([[header,...rows].join('\n')],{type:'text/csv'});
-  downloadBlob(blob,'ip_product_projects_2026.csv'); closeModal('exportModal');
-  showToast('Exported as CSV.','success');
-}
-function downloadBlob(blob,fn){
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download=fn; a.click(); URL.revokeObjectURL(a.href);
-}
-
-/* ═══════════ IMPORT ═══════════ */
-function triggerImport(){ document.getElementById('importInput').click(); }
-function handleImport(e){
-  const file=e.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    try{
-      if(file.name.endsWith('.json')){
-        const parsed=JSON.parse(ev.target.result);
-        if(!Array.isArray(parsed)) throw new Error('Invalid JSON format');
-        projects=parsed; saveProjects(projects); render();
-        showToast(`Imported ${projects.length} projects.`,'success');
-      } else {
-        const lines=ev.target.result.split('\n').filter(l=>l.trim());
-        const headers=lines[0].split(',').map(h=>h.replace(/"/g,'').trim());
-        const imported=lines.slice(1).map(line=>{
-          const vals=line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v=>v.replace(/^"|"$/g,'').replace(/""/g,'"'));
-          const obj={id:uid(),timeline:{}};
-          headers.forEach((h,i)=>{ if(TL_KEYS.includes(h))obj.timeline[h]=vals[i]||''; else obj[h]=vals[i]||''; });
-          return obj;
-        });
-        projects=imported; saveProjects(projects); render();
-        showToast(`Imported ${projects.length} projects.`,'success');
-      }
-    }catch(err){showToast('Import failed: '+err.message,'error');}
-    e.target.value='';
-  };
-  reader.readAsText(file);
-}
-
-/* ═══════════ TOAST ═══════════ */
-function showToast(msg,type='info'){
-  const icons={success:'✅',error:'❌',info:'ℹ️'};
-  const el=document.createElement('div');
-  el.className=`toast ${type}`;
-  el.innerHTML=`<span>${icons[type]||'ℹ️'}</span> ${msg}`;
-  document.getElementById('toastContainer').appendChild(el);
-  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .4s';setTimeout(()=>el.remove(),400);},3000);
-}
-
-/* ═══════════ INIT ═══════════ */
-render();
-</script>
+        // สั่งรันดึงข้อมูลทันทีเมื่อเปิดหน้าจอเว็บ
+        window.addEventListener('DOMContentLoaded', fetchSheetData);
+    </script>
 </body>
 </html>
