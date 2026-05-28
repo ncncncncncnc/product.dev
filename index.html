@@ -184,18 +184,18 @@
             background-color: #f1f5f9 !important;
         }
 
-        /* ตรึงคอลัมน์สำคัญไว้เมื่อเลื่อนแถวขวา */
+        /* ตรึงหมุดคอลัมน์ลำดับและชื่อสินค้า */
         tr td:nth-child(1), tr th:nth-child(1) { position: sticky; left: 0; z-index: 2; }
         tr td:nth-child(2), tr th:nth-child(2) { position: sticky; left: 50px; z-index: 2; border-right: 2px solid var(--border-color); }
         
         tr:nth-child(odd) td:nth-child(1), tr:nth-child(odd) td:nth-child(2) { background-color: #fff; }
         tr:nth-child(even) td:nth-child(1), tr:nth-child(even) td:nth-child(2) { background-color: #f8fafc; }
 
-        /* แถวหัวข้อใหญ่ (Category Header Row) ให้แสดงสีไฮไลท์พื้นหลังพรีเมียม */
+        /* 👑 แต่งแถวหัวข้อใหญ่เลขเดี่ยวให้เป็นแถบสีเทาอ่อนสุดหรูแบบทอดยาว */
         tr.main-category-row td {
-            background-color: #f1f5f9 !important;
+            background-color: #cbd5e1 !important; /* ปรับโทนสีเทาโมเดิร์นเข้มขึ้นให้เห็นชัดเจน */
             font-weight: 700 !important;
-            color: #1e293b !important;
+            color: #0f172a !important;
             font-size: 14px;
         }
 
@@ -264,12 +264,12 @@
     <div class="dashboard-container">
         <header>
             <h1>Product Developing Projects Tracking Dashboard</h1>
-            <p>🔄 Live Syncing with Google Sheets (Smart Dynamic Filtering)</p>
+            <p>🔄 Live Syncing with Google Sheets (Smart Section Detection)</p>
         </header>
 
         <div class="controls-panel">
             <div class="search-box">
-                <input text="text" id="search-input" placeholder="🔍 Search by Project Name, SKU or Code...">
+                <input type="text" id="search-input" placeholder="🔍 Search by Project Name, SKU or Code...">
             </div>
             <div class="filter-group">
                 <select id="status-filter">
@@ -356,11 +356,14 @@
                 const row = parseCSVRow(lines[i]);
                 
                 if (row.length > 1 && (row[0] || row[1])) {
-                    // ตรวจสอบว่าเป็นหัวข้อใหญ่หรือไม่ (ถ้าไม่มีรหัส SKU และ ไม่มีสภาวะจัดเก็บ)
-                    const isMainHeader = (!row[2] || row[2].trim() === '') && (!row[3] || row[3].trim() === '');
+                    const numberStr = row[0].trim();
+                    
+                    // 👑 ลอจิกเทพตัวใหม่: เช็กเลยว่าถ้าลำดับเป็นเลขตัวเดียวโดดๆ ไม่มีจุดทศนิยม (เช่น "1", "2", "3") 
+                    // ให้ระบุเลยว่าเป็นแถวหัวข้อแม่ (isHeader = true) ทันที!
+                    const isMainHeader = numberStr !== '' && !numberStr.includes('.');
 
                     projects.push({
-                        no: row[0] || '',
+                        no: numberStr,
                         name: row[1] || '',
                         sku: isMainHeader ? '' : (row[2] || ''),
                         storage: isMainHeader ? '' : (row[3] || ''),
@@ -386,7 +389,7 @@
                         reportUrl: isMainHeader ? '' : (row[21] || ''),
                         result: isMainHeader ? '' : (row[22] || ''),
                         note: row[23] || '',
-                        isHeader: isMainHeader // ผูกตัวแปรบอกสถานะว่าเป็นแถวแม่/หัวข้อใหญ่
+                        isHeader: isMainHeader
                     });
                 }
             }
@@ -416,7 +419,7 @@
             data.forEach(proj => {
                 const tr = document.createElement('tr');
                 
-                // 🌟 จัดการสิริโฉมกรณีเป็น "แถวหัวข้อใหญ่ เลข 1, 2, 3"
+                // 🌟 ถ้าตรวจเจอว่าเป็นแถวแม่ เลข 1, 2, 3 ตบเข้าแถบสีเทายาว สลัดปุ่มทิ้งทั้งหมด!
                 if (proj.isHeader) {
                     tr.classList.add('main-category-row');
                     tr.innerHTML = `
@@ -424,10 +427,10 @@
                         <td colspan="23" style="text-align: left; padding-left: 15px;">${proj.name}</td>
                     `;
                     tbody.appendChild(tr);
-                    return; // ดีดออกไปขึ้นแถวใหม่ทันที ไม่ต้องวาดช่องกรอกข้อมูลด้านล่างให้รกตา
+                    return;
                 }
 
-                // 🌟 จัดการแถวลูก/แถวสินค้าปกติ (ตรงตามล็อคอินดัชนีพิกัดจริง)
+                // 🌟 แถวสินค้าปกติ (จัดวางช่องแบบลงล็อค 100%)
                 const statusClass = proj.status.toLowerCase().includes('finish') ? 'badge-finish' : 'badge-ongoing';
                 
                 let resultClass = '';
@@ -494,7 +497,7 @@
                 const selectedResult = resultFilter.value;
 
                 const filtered = rawProjectsData.filter(proj => {
-                    if (proj.isHeader) return true; // ให้คงแถวหัวข้อใหญ่ไว้เสมอเวลาคัดกรอง
+                    if (proj.isHeader) return true;
                     
                     const matchesSearch = proj.name.toLowerCase().includes(searchTerm) || 
                                           proj.no.toLowerCase().includes(searchTerm) ||
