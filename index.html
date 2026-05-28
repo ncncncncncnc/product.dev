@@ -39,7 +39,7 @@
         body {
             background-color: #f1f5f9;
             color: var(--text-main);
-            padding: 15px; /* ลด padding เพื่อให้เหมาะกับมือถือมากขึ้น */
+            padding: 15px;
         }
 
         .dashboard-container {
@@ -74,7 +74,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
             margin-bottom: 20px;
             display: flex;
-            flex-direction: column; /* ปรับให้ยืดหยุ่นตามหน้าจอมือถือ */
+            flex-direction: column;
             gap: 12px;
         }
 
@@ -157,9 +157,8 @@
             background-color: var(--card-bg);
             border-radius: 12px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.03);
-            overflow-x: auto; /* เปิดให้เลื่อนซ้ายขวาได้อิสระ */
+            overflow-x: auto; /* เปิดให้ปัดนิ้วเลื่อนซ้ายขวาได้อิสระ */
             border: 1px solid var(--border-color);
-            max-height: 700px;
         }
 
         table {
@@ -171,15 +170,14 @@
             white-space: nowrap;
         }
 
+        /* 👑 เอาคำสั่งลอยตัว (sticky) ของหัวตารางออกทั้งหมดแบบถอนรากถอนโคน เพื่อไม่ให้มันลอยทับกันบนมือถือค่ะ */
         th {
             background-color: #f8fafc;
             color: #475569;
             padding: 14px 12px;
             font-weight: 600;
             border-bottom: 2px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            position: static !important; /* ปลดล็อกไม่ให้ลอยค้างเด็ดขาด */
         }
 
         th.timeline-header {
@@ -211,15 +209,15 @@
             background-color: #f1f5f9 !important;
         }
 
-        /* 🔓 ปลดล็อกคำสั่ง Sticky เดิมออกทั้งหมดเพื่อให้เลื่อนไหลตามนิ้วโป้งบนมือถือค๊าา */
+        /* เอาคำสั่ง Sticky ออกจากคอลัมน์เนื้อหาด้วยเพื่อความเสถียร */
         tr td:nth-child(1), tr th:nth-child(1),
         tr td:nth-child(2), tr th:nth-child(2) { 
-            position: static; 
-            box-shadow: none;
-            border-right: none;
+            position: static !important; 
+            box-shadow: none !important;
+            border-right: none !important;
         }
 
-        /* 👑 ตกแต่งแถวหัวข้อใหญ่เลขเดี่ยวให้เป็นสีเทาโมเดิร์นแบบทอดยาวโล่งตา */
+        /* ตกแต่งแถวหัวข้อใหญ่ (1, 2, 3) ให้เป็นแถบสีเทาโมเดิร์นสวยงาม ทอดยาวโล่งตา */
         tr.main-category-row td {
             background-color: #cbd5e1 !important;
             font-weight: 700 !important;
@@ -292,7 +290,7 @@
     <div class="dashboard-container">
         <header>
             <h1>Product Developing Projects Tracking Dashboard</h1>
-            <p>🔄 Live Syncing with Google Sheets (Mobile Optimization Enabled 📱)</p>
+            <p>🔄 Live Syncing with Google Sheets (100% Fixed Header Alignment 📱)</p>
         </header>
 
         <!-- Controls Panel -->
@@ -351,7 +349,7 @@
                 </thead>
                 <tbody id="table-body">
                     <tr>
-                        <td colspan="24" style="text-align: center; padding: 40px;">⏳ Updating layout styles...</td>
+                        <td colspan="24" style="text-align: center; padding: 40px;">⏳ Syncing perfectly aligned rows...</td>
                     </tr>
                 </tbody>
             </table>
