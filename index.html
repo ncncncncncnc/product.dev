@@ -39,7 +39,7 @@
         body {
             background-color: #f1f5f9;
             color: var(--text-main);
-            padding: 30px;
+            padding: 15px; /* ลด padding เพื่อให้เหมาะกับมือถือมากขึ้น */
         }
 
         .dashboard-container {
@@ -49,39 +49,50 @@
 
         header {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            padding: 30px;
-            border-radius: 16px;
+            padding: 20px;
+            border-radius: 12px;
             color: white;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
         }
 
         header h1 {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 700;
         }
 
         header p {
             color: #94a3b8;
-            font-size: 14px;
+            font-size: 13px;
             margin-top: 6px;
         }
 
         .controls-panel {
             background-color: var(--card-bg);
-            padding: 20px;
+            padding: 15px;
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            align-items: center;
+            flex-direction: column; /* ปรับให้ยืดหยุ่นตามหน้าจอมือถือ */
+            gap: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .controls-panel {
+                flex-direction: row;
+                align-items: center;
+            }
         }
 
         .search-box {
-            flex: 1;
-            min-width: 300px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .search-box {
+                flex: 1;
+            }
         }
 
         .search-box input {
@@ -102,10 +113,18 @@
 
         .filter-group {
             display: flex;
-            gap: 12px;
+            gap: 10px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .filter-group {
+                width: auto;
+            }
         }
 
         .filter-group select {
+            flex: 1;
             padding: 12px 16px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -117,22 +136,30 @@
         }
 
         .status-summary {
-            margin-left: auto;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #6366f1;
             background: #e0e7ff;
-            padding: 10px 18px;
+            padding: 8px 16px;
             border-radius: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .status-summary {
+                width: auto;
+                margin-left: auto;
+            }
         }
 
         .table-container {
             background-color: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 12px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.03);
-            overflow-x: auto;
+            overflow-x: auto; /* เปิดให้เลื่อนซ้ายขวาได้อิสระ */
             border: 1px solid var(--border-color);
-            max-height: 750px;
+            max-height: 700px;
         }
 
         table {
@@ -147,7 +174,7 @@
         th {
             background-color: #f8fafc;
             color: #475569;
-            padding: 16px 14px;
+            padding: 14px 12px;
             font-weight: 600;
             border-bottom: 2px solid var(--border-color);
             position: sticky;
@@ -170,7 +197,7 @@
         }
 
         td {
-            padding: 14px 14px;
+            padding: 12px 12px;
             border-bottom: 1px solid var(--border-color);
             vertical-align: middle;
             background-color: #fff;
@@ -184,16 +211,17 @@
             background-color: #f1f5f9 !important;
         }
 
-        /* ตรึงหมุดคอลัมน์ลำดับและชื่อสินค้า */
-        tr td:nth-child(1), tr th:nth-child(1) { position: sticky; left: 0; z-index: 2; }
-        tr td:nth-child(2), tr th:nth-child(2) { position: sticky; left: 50px; z-index: 2; border-right: 2px solid var(--border-color); }
-        
-        tr:nth-child(odd) td:nth-child(1), tr:nth-child(odd) td:nth-child(2) { background-color: #fff; }
-        tr:nth-child(even) td:nth-child(1), tr:nth-child(even) td:nth-child(2) { background-color: #f8fafc; }
+        /* 🔓 ปลดล็อกคำสั่ง Sticky เดิมออกทั้งหมดเพื่อให้เลื่อนไหลตามนิ้วโป้งบนมือถือค๊าา */
+        tr td:nth-child(1), tr th:nth-child(1),
+        tr td:nth-child(2), tr th:nth-child(2) { 
+            position: static; 
+            box-shadow: none;
+            border-right: none;
+        }
 
-        /* 👑 แต่งแถวหัวข้อใหญ่เลขเดี่ยวให้เป็นแถบสีเทาอ่อนสุดหรูแบบทอดยาว */
+        /* 👑 ตกแต่งแถวหัวข้อใหญ่เลขเดี่ยวให้เป็นสีเทาโมเดิร์นแบบทอดยาวโล่งตา */
         tr.main-category-row td {
-            background-color: #cbd5e1 !important; /* ปรับโทนสีเทาโมเดิร์นเข้มขึ้นให้เห็นชัดเจน */
+            background-color: #cbd5e1 !important;
             font-weight: 700 !important;
             color: #0f172a !important;
             font-size: 14px;
@@ -264,9 +292,10 @@
     <div class="dashboard-container">
         <header>
             <h1>Product Developing Projects Tracking Dashboard</h1>
-            <p>🔄 Live Syncing with Google Sheets (Smart Section Detection)</p>
+            <p>🔄 Live Syncing with Google Sheets (Mobile Optimization Enabled 📱)</p>
         </header>
 
+        <!-- Controls Panel -->
         <div class="controls-panel">
             <div class="search-box">
                 <input type="text" id="search-input" placeholder="🔍 Search by Project Name, SKU or Code...">
@@ -291,8 +320,8 @@
             <table id="projects-table">
                 <thead>
                     <tr>
-                        <th rowspan="2" style="width: 50px; background-color: #f8fafc;">No.</th>
-                        <th rowspan="2" style="background-color: #f8fafc;">Project / SKU Name</th>
+                        <th rowspan="2" style="width: 50px;">No.</th>
+                        <th rowspan="2">Project / SKU Name</th>
                         <th rowspan="2">Product Code / SKU</th>
                         <th rowspan="2">Storage Condition</th>
                         <th rowspan="2">Project Status</th>
@@ -322,7 +351,7 @@
                 </thead>
                 <tbody id="table-body">
                     <tr>
-                        <td colspan="24" style="text-align: center; padding: 40px;">⏳ Syncing structural rows...</td>
+                        <td colspan="24" style="text-align: center; padding: 40px;">⏳ Updating layout styles...</td>
                     </tr>
                 </tbody>
             </table>
@@ -357,9 +386,6 @@
                 
                 if (row.length > 1 && (row[0] || row[1])) {
                     const numberStr = row[0].trim();
-                    
-                    // 👑 ลอจิกเทพตัวใหม่: เช็กเลยว่าถ้าลำดับเป็นเลขตัวเดียวโดดๆ ไม่มีจุดทศนิยม (เช่น "1", "2", "3") 
-                    // ให้ระบุเลยว่าเป็นแถวหัวข้อแม่ (isHeader = true) ทันที!
                     const isMainHeader = numberStr !== '' && !numberStr.includes('.');
 
                     projects.push({
@@ -419,7 +445,6 @@
             data.forEach(proj => {
                 const tr = document.createElement('tr');
                 
-                // 🌟 ถ้าตรวจเจอว่าเป็นแถวแม่ เลข 1, 2, 3 ตบเข้าแถบสีเทายาว สลัดปุ่มทิ้งทั้งหมด!
                 if (proj.isHeader) {
                     tr.classList.add('main-category-row');
                     tr.innerHTML = `
@@ -430,7 +455,6 @@
                     return;
                 }
 
-                // 🌟 แถวสินค้าปกติ (จัดวางช่องแบบลงล็อค 100%)
                 const statusClass = proj.status.toLowerCase().includes('finish') ? 'badge-finish' : 'badge-ongoing';
                 
                 let resultClass = '';
