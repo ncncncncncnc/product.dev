@@ -184,12 +184,20 @@
             background-color: #f1f5f9 !important;
         }
 
-        /* ตรึงคอลัมน์ลำดับและชื่อโปรเจกต์คงที่เมื่อเลื่อนจอซ้ายขวา */
+        /* ตรึงคอลัมน์สำคัญไว้เมื่อเลื่อนแถวขวา */
         tr td:nth-child(1), tr th:nth-child(1) { position: sticky; left: 0; z-index: 2; }
         tr td:nth-child(2), tr th:nth-child(2) { position: sticky; left: 50px; z-index: 2; border-right: 2px solid var(--border-color); }
         
         tr:nth-child(odd) td:nth-child(1), tr:nth-child(odd) td:nth-child(2) { background-color: #fff; }
         tr:nth-child(even) td:nth-child(1), tr:nth-child(even) td:nth-child(2) { background-color: #f8fafc; }
+
+        /* แถวหัวข้อใหญ่ (Category Header Row) ให้แสดงสีไฮไลท์พื้นหลังพรีเมียม */
+        tr.main-category-row td {
+            background-color: #f1f5f9 !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            font-size: 14px;
+        }
 
         .badge {
             padding: 6px 12px;
@@ -256,12 +264,12 @@
     <div class="dashboard-container">
         <header>
             <h1>Product Developing Projects Tracking Dashboard</h1>
-            <p>🔄 Live Dynamic Syncing with Google Sheets (100% Fixed Columns Matching)</p>
+            <p>🔄 Live Syncing with Google Sheets (Smart Dynamic Filtering)</p>
         </header>
 
         <div class="controls-panel">
             <div class="search-box">
-                <input type="text" id="search-input" placeholder="🔍 Search by Project Name, SKU or Code...">
+                <input text="text" id="search-input" placeholder="🔍 Search by Project Name, SKU or Code...">
             </div>
             <div class="filter-group">
                 <select id="status-filter">
@@ -276,7 +284,7 @@
                     <option value="Pending">Pending</option>
                 </select>
             </div>
-            <div class="status-summary" id="status-summary">Loading database...</div>
+            <div class="status-summary" id="status-summary">Loading...</div>
         </div>
 
         <div class="table-container">
@@ -314,7 +322,7 @@
                 </thead>
                 <tbody id="table-body">
                     <tr>
-                        <td colspan="24" style="text-align: center; padding: 40px;">⏳ Syncing data entries...</td>
+                        <td colspan="24" style="text-align: center; padding: 40px;">⏳ Syncing structural rows...</td>
                     </tr>
                 </tbody>
             </table>
@@ -342,41 +350,43 @@
 
             const projects = [];
 
-            // อ่านข้อมูลตั้งแต่แถวที่ 3 เป็นต้นไป (ข้ามแถวหัวตารางควบช่อง)
             for (let i = 2; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
 
                 const row = parseCSVRow(lines[i]);
                 
-                // ล็อคอินดัชนีช่องให้ตรงกับไฟล์สเปรดชีตจริงของคุณพี่แบบช่องต่อช่อง
                 if (row.length > 1 && (row[0] || row[1])) {
+                    // ตรวจสอบว่าเป็นหัวข้อใหญ่หรือไม่ (ถ้าไม่มีรหัส SKU และ ไม่มีสภาวะจัดเก็บ)
+                    const isMainHeader = (!row[2] || row[2].trim() === '') && (!row[3] || row[3].trim() === '');
+
                     projects.push({
                         no: row[0] || '',
                         name: row[1] || '',
-                        sku: row[2] || '',           // ช่องรหัสสินค้าตัวปัญหาที่เคยดันแถวเบี้ยว
-                        storage: row[3] || '',       // ช่องสภาวะจัดเก็บ (Frozen)
-                        status: row[4] || '',        // ช่องสถานะโปรเจกต์ (On-going)
+                        sku: isMainHeader ? '' : (row[2] || ''),
+                        storage: isMainHeader ? '' : (row[3] || ''),
+                        status: isMainHeader ? '' : (row[4] || ''),
                         timeline: {
-                            q4_25: row[5] || '',
-                            jan: row[6] || '',
-                            feb: row[7] || '',
-                            mar: row[8] || '',
-                            apr: row[9] || '',
-                            may: row[10] || '',
-                            jun: row[11] || '',
-                            jul: row[12] || '',
-                            aug: row[13] || '',
-                            sep: row[14] || '',
-                            oct: row[15] || '',
-                            nov: row[16] || '',
-                            dec: row[17] || ''
+                            q4_25: isMainHeader ? '' : (row[5] || ''),
+                            jan: isMainHeader ? '' : (row[6] || ''),
+                            feb: isMainHeader ? '' : (row[7] || ''),
+                            mar: isMainHeader ? '' : (row[8] || ''),
+                            apr: isMainHeader ? '' : (row[9] || ''),
+                            may: isMainHeader ? '' : (row[10] || ''),
+                            jun: isMainHeader ? '' : (row[11] || ''),
+                            jul: isMainHeader ? '' : (row[12] || ''),
+                            aug: isMainHeader ? '' : (row[13] || ''),
+                            sep: isMainHeader ? '' : (row[14] || ''),
+                            oct: isMainHeader ? '' : (row[15] || ''),
+                            nov: isMainHeader ? '' : (row[16] || ''),
+                            dec: isMainHeader ? '' : (row[17] || '')
                         },
-                        batch: row[18] || '',
-                        lastUpdate: row[19] || '',
-                        testingStatus: row[20] || '',
-                        reportUrl: row[21] || '',
-                        result: row[22] || '',
-                        note: row[23] || ''
+                        batch: isMainHeader ? '' : (row[18] || ''),
+                        lastUpdate: isMainHeader ? '' : (row[19] || ''),
+                        testingStatus: isMainHeader ? '' : (row[20] || ''),
+                        reportUrl: isMainHeader ? '' : (row[21] || ''),
+                        result: isMainHeader ? '' : (row[22] || ''),
+                        note: row[23] || '',
+                        isHeader: isMainHeader // ผูกตัวแปรบอกสถานะว่าเป็นแถวแม่/หัวข้อใหญ่
                     });
                 }
             }
@@ -406,15 +416,27 @@
             data.forEach(proj => {
                 const tr = document.createElement('tr');
                 
+                // 🌟 จัดการสิริโฉมกรณีเป็น "แถวหัวข้อใหญ่ เลข 1, 2, 3"
+                if (proj.isHeader) {
+                    tr.classList.add('main-category-row');
+                    tr.innerHTML = `
+                        <td class="text-center">${proj.no}</td>
+                        <td colspan="23" style="text-align: left; padding-left: 15px;">${proj.name}</td>
+                    `;
+                    tbody.appendChild(tr);
+                    return; // ดีดออกไปขึ้นแถวใหม่ทันที ไม่ต้องวาดช่องกรอกข้อมูลด้านล่างให้รกตา
+                }
+
+                // 🌟 จัดการแถวลูก/แถวสินค้าปกติ (ตรงตามล็อคอินดัชนีพิกัดจริง)
                 const statusClass = proj.status.toLowerCase().includes('finish') ? 'badge-finish' : 'badge-ongoing';
                 
-                let resultClass = 'badge-pending';
+                let resultClass = '';
                 if (proj.result.toLowerCase() === 'pass') resultClass = 'badge-pass';
-                if (proj.result.toLowerCase() === 'fail') resultClass = 'badge-fail';
+                else if (proj.result.toLowerCase() === 'fail') resultClass = 'badge-fail';
+                else if (proj.result.toLowerCase() === 'pending') resultClass = 'badge-pending';
 
                 const getTimelineTd = (val) => {
                     const hasDataClass = val.trim() !== '' ? 'timeline-has-data' : '';
-                    // เปลี่ยนคำว่า TRUE/เครื่องหมายถูก ให้แสดงผลเป็นสัญลักษณ์สวยๆ บนแดชบอร์ด
                     let displayVal = val;
                     if (val.toUpperCase() === 'TRUE' || val === '✅') displayVal = '✅';
                     return `<td class="timeline-cell ${hasDataClass}">${displayVal}</td>`;
@@ -452,13 +474,13 @@
                     <td>${proj.lastUpdate}</td>
                     <td>${proj.testingStatus}</td>
                     <td class="text-center">${reportBtn}</td>
-                    <td><span class="badge ${resultClass}">${proj.result || 'Pending'}</span></td>
+                    <td>${proj.result ? `<span class="badge ${resultClass}">${proj.result}</span>` : '-'}</td>
                     <td style="white-space: normal; min-width: 200px; font-size: 12px; color: #475569;">${proj.note}</td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            document.getElementById('status-summary').textContent = `🎯 Total: ${data.length} Items`;
+            document.getElementById('status-summary').textContent = `🎯 Total: ${data.filter(p => !p.isHeader).length} Items`;
         }
 
         function setupEventListeners() {
@@ -472,6 +494,8 @@
                 const selectedResult = resultFilter.value;
 
                 const filtered = rawProjectsData.filter(proj => {
+                    if (proj.isHeader) return true; // ให้คงแถวหัวข้อใหญ่ไว้เสมอเวลาคัดกรอง
+                    
                     const matchesSearch = proj.name.toLowerCase().includes(searchTerm) || 
                                           proj.no.toLowerCase().includes(searchTerm) ||
                                           proj.sku.toLowerCase().includes(searchTerm);
