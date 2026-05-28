@@ -251,7 +251,6 @@
 
         <div id="error-container"></div>
 
-        <!-- Controls Panel -->
         <div class="controls-panel">
             <div class="search-box">
                 <input type="text" id="search-input" placeholder="🔍 Search by Project Name or SKU...">
@@ -274,11 +273,9 @@
             </div>
         </div>
 
-        <!-- Main Data Table -->
         <div class="table-container">
             <table id="projects-table">
                 <thead>
-                    <!-- Multi-tier Header -->
                     <tr>
                         <th rowspan="2" style="width: 50px;">No.</th>
                         <th rowspan="2">Project / SKU Name</th>
@@ -318,8 +315,8 @@
     </div>
 
     <script>
-        // ใส่ลิงก์สาธารณะตัวใหม่ล่าสุดเรียบร้อยค๊าาา
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXt1z6mvApFUjjiEbvGRPbAqZ6oDePBlgKIl-RQSGnsLf1yRrSjwL2qwC6J5VRDhc-hgh9sFh1y5fA/pub?output=csv';
+        // เปลี่ยนมาฝังลิงก์นำเข้าชีตเฉพาะแผ่นงานที่ถูกต้องเรียบร้อยค่ะคุณพี่!
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXt1z6mvApFUjjiEbvGRPbAqZ6oDePBlgKIl-RQSGnsLf1yRrSjwL2qwC6J5VRDhc-hgh9sFh1y5fA/pub?gid=1071677952&single=true&output=csv';
 
         let rawProjectsData = [];
 
@@ -346,7 +343,7 @@
 
             const projects = [];
 
-            // ข้ามแถวหัวตาราง (แถว 1-2) และเริ่มอ่านข้อมูลจริงตั้งแต่แถวที่ 3
+            // ข้ามแถวหัวข้อควบช่องของ Google Sheets แล้วอ่านข้อมูลดิบจริงตั้งแต่บรรทัดที่ 3 เป็นต้นไป
             for (let i = 2; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
 
