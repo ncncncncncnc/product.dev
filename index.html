@@ -251,6 +251,7 @@
 
         <div id="error-container"></div>
 
+        <!-- Controls Panel -->
         <div class="controls-panel">
             <div class="search-box">
                 <input type="text" id="search-input" placeholder="🔍 Search by Project Name or SKU...">
@@ -273,9 +274,11 @@
             </div>
         </div>
 
+        <!-- Main Data Table -->
         <div class="table-container">
             <table id="projects-table">
                 <thead>
+                    <!-- Multi-tier Header -->
                     <tr>
                         <th rowspan="2" style="width: 50px;">No.</th>
                         <th rowspan="2">Project / SKU Name</th>
@@ -315,12 +318,11 @@
     </div>
 
     <script>
-        // เผยแพร่ลิงก์สเปรดชีตในรูปแบบ CSV อัตโนมัติเรียบร้อยค่ะ
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/1T-IO8vaICg_ESWwPMmNKpK8F1FS8Mi9Oc9r_LFGVMqU/pub?gid=1071677952&output=csv';
+        // ใส่ลิงก์สาธารณะตัวใหม่ล่าสุดเรียบร้อยค๊าาา
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXt1z6mvApFUjjiEbvGRPbAqZ6oDePBlgKIl-RQSGnsLf1yRrSjwL2qwC6J5VRDhc-hgh9sFh1y5fA/pub?output=csv';
 
         let rawProjectsData = [];
 
-        // ฟังก์ชันดึงข้อมูลจาก Google Sheets
         async function fetchSheetData() {
             try {
                 const response = await fetch(sheetUrl);
@@ -338,28 +340,24 @@
             }
         }
 
-        // ฟังก์ชันแปลงข้อมูล CSV เป็น Array
         function parseCSV(text) {
-            // แตกบรรทัดด้วย Regex ป้องกันปัญหากรณีมีคอมม่าใน Note
             const lines = text.split(/\r?\n/);
-            if (lines.length < 3) return; // ไม่มีข้อมูลเพียงพอ
+            if (lines.length < 3) return;
 
             const projects = [];
 
-            // เริ่มอ่านตั้งแต่แถวที่ 3 (ดัชนีที่ 2) เพราะแถว 1-2 เป็นหัวข้อตารางแบบควบช่อง
+            // ข้ามแถวหัวตาราง (แถว 1-2) และเริ่มอ่านข้อมูลจริงตั้งแต่แถวที่ 3
             for (let i = 2; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
 
                 const row = parseCSVRow(lines[i]);
                 
-                // ตรวจสอบความสมบูรณ์ขั้นต่ำ (ต้องมี No. หรือชื่อโปรเจกต์)
                 if (row.length > 1 && (row[0] || row[1])) {
                     projects.push({
                         no: row[0] || '',
                         name: row[1] || '',
                         storage: row[2] || '',
                         status: row[3] || 'On-going',
-                        // ลำดับช่องไทม์ไลน์รายเดือน (Q4 25 จนถึง Dec 2026 ทั้งหมด 13 ช่อง)
                         timeline: {
                             q4_25: row[4] || '', jan: row[5] || '', feb: row[6] || '', mar: row[7] || '',
                             apr: row[8] || '', may: row[9] || '', jun: row[10] || '', jul: row[11] || '',
@@ -380,7 +378,6 @@
             setupEventListeners();
         }
 
-        // ฟังก์ชันช่วยจัดรูปแบบข้อมูลแถว CSV
         function parseCSVRow(text) {
             let p = '', r = [];
             let q = false;
@@ -394,7 +391,6 @@
             return r;
         }
 
-        // ฟังก์ชันวาดตารางข้อมูลและสถานะลงหน้าเว็บ
         function renderTable(data) {
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
@@ -407,15 +403,12 @@
 
             data.forEach(proj => {
                 const tr = document.createElement('tr');
-
-                // จัดการแต่ง Badge สีตามเงื่อนไขความคืบหน้า
                 const statusClass = proj.status.toLowerCase().includes('finish') ? 'badge-finish' : 'badge-ongoing';
                 
                 let resultClass = 'badge-pending';
                 if (proj.result.toLowerCase() === 'pass') resultClass = 'badge-pass';
                 if (proj.result.toLowerCase() === 'fail') resultClass = 'badge-fail';
 
-                // จัดการปุ่มลิงก์รายงานล่าสุด (Latest Report)
                 let reportBtn = '';
                 if (proj.reportUrl && proj.reportUrl.startsWith('http')) {
                     reportBtn = `<a href="${proj.reportUrl}" target="_blank" class="btn-report">🔗 View</a>`;
@@ -458,12 +451,10 @@
             updateSummary(data.length);
         }
 
-        // ฟังก์ชันอัปเดตสรุปยอดโครงการ
         function updateSummary(count) {
             document.getElementById('status-summary').textContent = `📊 Showing ${count} Projects`;
         }
 
-        // ฟังก์ชันระบบค้นหาแบบ Real-time และระบบตัวกรอง
         function setupEventListeners() {
             const searchInput = document.getElementById('search-input');
             const statusFilter = document.getElementById('status-filter');
@@ -490,7 +481,6 @@
             resultFilter.addEventListener('change', filterData);
         }
 
-        // สั่งรันดึงข้อมูลทันทีเมื่อเปิดหน้าจอเว็บ
         window.addEventListener('DOMContentLoaded', fetchSheetData);
     </script>
 </body>
