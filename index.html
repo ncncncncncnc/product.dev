@@ -9,24 +9,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0f172a;
-            --secondary-bg: #f8fafc;
+            --primary-bg: #f3f4f6;
             --card-bg: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --table-border: #e2e8f0;
+            --grid-blue: #f0f4f8;
             
-            /* Status Colors */
-            --ongoing-bg: #e0f2fe;
-            --ongoing-text: #0369a1;
-            --finish-bg: #f1f5f9;
-            --finish-text: #475569;
-            --pass-bg: #dcfce7;
-            --pass-text: #166534;
-            --fail-bg: #fee2e2;
-            --fail-text: #991b1b;
-            --pending-bg: #fef9c3;
-            --pending-text: #854d0e;
+            /* Status Tag Styles from 1780043332200.jpg */
+            --ongoing-bg: #e0f2fe; --ongoing-text: #0284c7;
+            --finish-bg: #fee2e2; --finish-text: #ef4444;
+            --discussion-bg: #fef9c3; --discussion-text: #b45309;
+            --pass-bg: #dcfce7; --pass-text: #16a34a;
+            --fail-bg: #fee2e2; --fail-text: #dc2626;
         }
 
         * {
@@ -37,9 +32,9 @@
         }
 
         body {
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             color: var(--text-main);
-            padding: 15px;
+            padding: 20px;
         }
 
         .dashboard-container {
@@ -49,135 +44,170 @@
 
         header {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            padding: 20px;
+            padding: 20px 25px;
             border-radius: 12px;
             color: white;
             margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
         }
 
-        header h1 {
-            font-size: 22px;
-            font-weight: 700;
-        }
+        header h1 { font-size: 22px; font-weight: 700; }
+        header p { color: #94a3b8; font-size: 13px; margin-top: 4px; }
 
-        header p {
-            color: #94a3b8;
-            font-size: 13px;
-            margin-top: 6px;
-        }
-
-        .controls-panel {
-            background-color: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
-            margin-bottom: 20px;
+        /* Controls & Stats Top Panel Grid */
+        .top-action-panel {
             display: flex;
             flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Search Section Wrapper */
+        .search-row {
+            display: flex;
+            flex-wrap: wrap;
             gap: 12px;
-        }
-
-        @media (min-width: 768px) {
-            .controls-panel {
-                flex-direction: row;
-                align-items: center;
-            }
-        }
-
-        .search-box {
+            align-items: center;
             width: 100%;
         }
 
-        @media (min-width: 768px) {
-            .search-box {
-                flex: 1;
-            }
+        .search-box {
+            flex: 1;
+            min-width: 250px;
         }
 
         .search-box input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
+            height: 42px; /* ล็อคความสูงมาตรฐานของแถวบนค๊าา */
+            padding: 0 16px;
+            border: 1px solid var(--table-border);
             border-radius: 8px;
             font-size: 14px;
             outline: none;
-            background-color: #f8fafc;
+            background-color: var(--card-bg);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
 
         .search-box input:focus {
-            border-color: #6366f1;
-            background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .filter-group {
             display: flex;
             gap: 10px;
-            width: 100%;
-        }
-
-        @media (min-width: 768px) {
-            .filter-group {
-                width: auto;
-            }
         }
 
         .filter-group select {
-            flex: 1;
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
+            height: 42px;
+            padding: 0 16px;
+            border: 1px solid var(--table-border);
             border-radius: 8px;
-            background-color: #f8fafc;
+            background-color: var(--card-bg);
             font-size: 14px;
             color: var(--text-main);
             outline: none;
             cursor: pointer;
         }
 
-        .status-summary {
-            font-size: 13px;
-            font-weight: 600;
-            color: #6366f1;
-            background: #e0e7ff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            text-align: center;
+        /* 📊 กล่องสรุปสถิติตามแบบภาพ 1780044884205.jpg บีบความสูงเท่าช่องค้นหาเป๊ะๆ */
+        .stats-grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             width: 100%;
         }
 
         @media (min-width: 768px) {
-            .status-summary {
-                width: auto;
-                margin-left: auto;
+            .stats-grid-container {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
+        @media (min-width: 1200px) {
+            .stats-grid-container {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            height: 42px; /* 🌟 ความสูงเท่ากับช่องค้นหาตามบรีฟเด็ดเป๊ะๆ */
+            border-radius: 8px;
+            border: 1px solid var(--table-border);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 10px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        .stat-icon-box {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* จับคู่สีไอคอนพาสเทลตามรูปถ่ายแนบ */
+        .icon-total { background-color: #e0e7ff; }
+        .icon-ongoing { background-color: #e0f2fe; }
+        .icon-finish { background-color: #fee2e2; }
+        .icon-discussion { background-color: #fef9c3; }
+        .icon-pass { background-color: #dcfce7; }
+        .icon-fail { background-color: #fde8e8; }
+
+        .stat-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .stat-number {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        /* 🛠️ สไตล์ตีตารางขึงสี่เหลี่ยมเป็นระเบียบชัดเจนตามภาพแนบ 1780043332200.jpg */
         .table-container {
             background-color: var(--card-bg);
             border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.03);
-            overflow-x: auto; /* เปิดให้ปัดนิ้วเลื่อนซ้ายขวาได้อิสระ */
-            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            overflow-x: auto;
+            border: 1px solid var(--table-border);
+            max-height: 700px;
         }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse; /* ขึงเส้นตารางชิดติดกัน */
             text-align: left;
-            font-size: 13px;
+            font-size: 12.5px;
             white-space: nowrap;
         }
 
-        /* 👑 เอาคำสั่งลอยตัว (sticky) ของหัวตารางออกทั้งหมดแบบถอนรากถอนโคน เพื่อไม่ให้มันลอยทับกันบนมือถือค่ะ */
         th {
             background-color: #f8fafc;
             color: #475569;
-            padding: 14px 12px;
+            padding: 12px 10px;
             font-weight: 600;
-            border-bottom: 2px solid var(--border-color);
-            position: static !important; /* ปลดล็อกไม่ให้ลอยค้างเด็ดขาด */
+            border: 1px solid var(--table-border); /* ตีตารางช่องหัวข้อ */
+            position: sticky;
+            top: 0;
+            z-index: 5;
         }
 
         th.timeline-header {
@@ -188,101 +218,73 @@
 
         th.month-header {
             text-align: center;
-            font-size: 12px;
-            font-weight: 500;
-            width: 50px;
-            border-bottom: 1px solid var(--border-color);
+            font-size: 11px;
+            width: 55px;
         }
 
         td {
-            padding: 12px 12px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 11px 10px;
+            border: 1px solid var(--table-border); /* 🌟 ตีตารางขึงเป็นกรอบระเบียบชัดเจนทุกช่อง */
             vertical-align: middle;
             background-color: #fff;
         }
 
-        tr:nth-child(even) td {
-            background-color: #f8fafc;
-        }
-
-        tr:hover td {
-            background-color: #f1f5f9 !important;
-        }
-
-        /* เอาคำสั่ง Sticky ออกจากคอลัมน์เนื้อหาด้วยเพื่อความเสถียร */
-        tr td:nth-child(1), tr th:nth-child(1),
-        tr td:nth-child(2), tr th:nth-child(2) { 
-            position: static !important; 
-            box-shadow: none !important;
-            border-right: none !important;
-        }
-
-        /* ตกแต่งแถวหัวข้อใหญ่ (1, 2, 3) ให้เป็นแถบสีเทาโมเดิร์นสวยงาม ทอดยาวโล่งตา */
+        /* แถวหัวข้อหลักสีเทาหรูทอดยาวเลิกมีปุ่มหลงช่อง */
         tr.main-category-row td {
-            background-color: #cbd5e1 !important;
+            background-color: #e2e8f0 !important;
             font-weight: 700 !important;
             color: #0f172a !important;
-            font-size: 14px;
+            font-size: 13.5px;
         }
 
+        /* สไตล์ชุดแต่งปุ่ม Badge สวยนูนตามรูปถ่ายแนบของคุณพี่ */
         .badge {
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11.5px;
             font-weight: 600;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .badge-ongoing { background-color: var(--ongoing-bg); color: var(--ongoing-text); }
         .badge-finish { background-color: var(--finish-bg); color: var(--finish-text); }
+        .badge-discussion { background-color: var(--discussion-bg); color: var(--discussion-text); }
         .badge-pass { background-color: var(--pass-bg); color: var(--pass-text); }
         .badge-fail { background-color: var(--fail-bg); color: var(--fail-text); }
-        .badge-pending { background-color: var(--pending-bg); color: var(--pending-text); }
 
         .storage-tag {
             color: #475569;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 11px;
-            background: #e2e8f0;
-            padding: 4px 8px;
-            border-radius: 6px;
         }
 
         .sku-tag {
             font-family: monospace;
-            color: #0f172a;
-            background-color: #f1f5f9;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 12px;
+            color: #64748b;
+            font-size: 11.5px;
         }
 
         .btn-report {
             display: inline-flex;
+            align-items: center;
+            gap: 3px;
             background-color: #fff;
             color: #4f46e5;
             border: 1px solid #e0e7ff;
-            padding: 6px 12px;
+            padding: 4px 8px;
             border-radius: 6px;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
 
-        .btn-report:hover {
-            background-color: #4f46e5;
-            color: #fff;
-        }
+        .btn-report:hover { background-color: #4f46e5; color: #fff; }
 
-        .timeline-cell {
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .timeline-has-data {
-            background-color: #e0e7ff !important;
-            color: #4f46e5;
-        }
+        .timeline-cell { text-align: center; font-weight: 500; }
+        .timeline-has-data { color: #2563eb; font-weight: 600; }
+        .text-center { text-align: center; }
     </style>
 </head>
 <body>
@@ -290,35 +292,84 @@
     <div class="dashboard-container">
         <header>
             <h1>Product Developing Projects Tracking Dashboard</h1>
-            <p>🔄 Live Syncing with Google Sheets (100% Fixed Header Alignment 📱)</p>
+            <p>🔄 Live Syncing with Google Sheets (Grid & Stats Optimized 📱)</p>
         </header>
 
-        <!-- Controls Panel -->
-        <div class="controls-panel">
-            <div class="search-box">
-                <input type="text" id="search-input" placeholder="🔍 Search by Project Name, SKU or Code...">
+        <div class="top-action-panel">
+            <!-- Search & Filters Row -->
+            <div class="search-row">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="🔍 Search by Project Name, SKU or Code...">
+                </div>
+                <div class="filter-group">
+                    <select id="status-filter">
+                        <option value="">All Project Status</option>
+                        <option value="On-going">On-going</option>
+                        <option value="Finish / Drop">Finish / Drop</option>
+                        <option value="Under Discussion">Under Discussion</option>
+                    </select>
+                    <select id="result-filter">
+                        <option value="">All Test Results</option>
+                        <option value="Pass">Pass</option>
+                        <option value="Fail">Fail</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
             </div>
-            <div class="filter-group">
-                <select id="status-filter">
-                    <option value="">All Project Status</option>
-                    <option value="On-going">On-going</option>
-                    <option value="Finish / Drop">Finish / Drop</option>
-                </select>
-                <select id="result-filter">
-                    <option value="">All Test Results</option>
-                    <option value="Pass">Pass</option>
-                    <option value="Fail">Fail</option>
-                    <option value="Pending">Pending</option>
-                </select>
+
+            <!-- 📊 กล่องสรุปการ์ดสถิติความสูงเท่าช่องค้นหาเป๊ะๆ ตามรูป 1780044884205.jpg -->
+            <div class="stats-grid-container">
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-total">📋</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Projects</span>
+                        <span class="stat-number" id="stat-total-val">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-ongoing">🔄</div>
+                    <div class="stat-info">
+                        <span class="stat-label">On-going</span>
+                        <span class="stat-number" id="stat-ongoing-val">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-finish">📁</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Finish / Drop</span>
+                        <span class="stat-number" id="stat-finish-val">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-discussion">💬</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Discussion</span>
+                        <span class="stat-number" id="stat-discussion-val">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-pass">✅</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Pass</span>
+                        <span class="stat-number" id="stat-pass-val">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-fail">❌</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Fail</span>
+                        <span class="stat-number" id="stat-fail-val">0</span>
+                    </div>
+                </div>
             </div>
-            <div class="status-summary" id="status-summary">Loading...</div>
         </div>
 
+        <!-- Main Grid Table -->
         <div class="table-container">
             <table id="projects-table">
                 <thead>
                     <tr>
-                        <th rowspan="2" style="width: 50px;">No.</th>
+                        <th rowspan="2" style="width: 45px; text-align: center;">No.</th>
                         <th rowspan="2">Project / SKU Name</th>
                         <th rowspan="2">Product Code / SKU</th>
                         <th rowspan="2">Storage Condition</th>
@@ -349,7 +400,7 @@
                 </thead>
                 <tbody id="table-body">
                     <tr>
-                        <td colspan="24" style="text-align: center; padding: 40px;">⏳ Syncing perfectly aligned rows...</td>
+                        <td colspan="24" style="text-align: center; padding: 30px;">⏳ Syncing data elements...</td>
                     </tr>
                 </tbody>
             </table>
@@ -419,6 +470,7 @@
             }
 
             rawProjectsData = projects;
+            calculateStats(rawProjectsData);
             renderTable(rawProjectsData);
             setupEventListeners();
         }
@@ -436,6 +488,37 @@
             return r;
         }
 
+        // 📊 ฟังก์ชันคำนวณและป้อนยอดตัวเลขจริงลงในการ์ดสรุปสถิติด้านบนค๊าา
+        function calculateStats(data) {
+            const actualItems = data.filter(p => !p.isHeader);
+            
+            let total = actualItems.length;
+            let ongoing = 0;
+            let finish = 0;
+            let discussion = 0;
+            let pass = 0;
+            let fail = 0;
+
+            actualItems.forEach(p => {
+                const s = p.status.toLowerCase();
+                const r = p.result.toLowerCase();
+
+                if (s.includes('ongoing') || s.includes('on-going')) ongoing++;
+                if (s.includes('finish') || s.includes('drop')) finish++;
+                if (s.includes('discussion')) discussion++;
+
+                if (r === 'pass') pass++;
+                if (r === 'fail') fail++;
+            });
+
+            document.getElementById('stat-total-val').textContent = total;
+            document.getElementById('stat-ongoing-val').textContent = ongoing;
+            document.getElementById('stat-finish-val').textContent = finish;
+            document.getElementById('stat-discussion-val').textContent = discussion;
+            document.getElementById('stat-pass-val').textContent = pass;
+            document.getElementById('stat-fail-val').textContent = fail;
+        }
+
         function renderTable(data) {
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
@@ -447,18 +530,34 @@
                     tr.classList.add('main-category-row');
                     tr.innerHTML = `
                         <td class="text-center">${proj.no}</td>
-                        <td colspan="23" style="text-align: left; padding-left: 15px;">${proj.name}</td>
+                        <td colspan="23">${proj.name}</td>
                     `;
                     tbody.appendChild(tr);
                     return;
                 }
 
-                const statusClass = proj.status.toLowerCase().includes('finish') ? 'badge-finish' : 'badge-ongoing';
-                
-                let resultClass = '';
-                if (proj.result.toLowerCase() === 'pass') resultClass = 'badge-pass';
-                else if (proj.result.toLowerCase() === 'fail') resultClass = 'badge-fail';
-                else if (proj.result.toLowerCase() === 'pending') resultClass = 'badge-pending';
+                // สไตล์ปุ่มสถานะโปรเจกต์ไอคอนพาสเทลพรีเมียมตามรูปแนบ
+                let statusMarkup = '-';
+                if (proj.status) {
+                    let stClass = 'badge-ongoing';
+                    let icon = '🔄';
+                    if (proj.status.toLowerCase().includes('finish') || proj.status.toLowerCase().includes('drop')) {
+                        stClass = 'badge-finish'; icon = '📁';
+                    } else if (proj.status.toLowerCase().includes('discussion')) {
+                        stClass = 'badge-discussion'; icon = '💬';
+                    }
+                    statusMarkup = `<span class="badge ${stClass}">${icon} ${proj.status}</span>`;
+                }
+
+                // สไตล์ปุ่มผลการทดสอบท้ายตาราง
+                let resultMarkup = '-';
+                if (proj.result) {
+                    let rsClass = 'badge-ongoing';
+                    if (proj.result.toLowerCase() === 'pass') rsClass = 'badge-pass';
+                    else if (proj.result.toLowerCase() === 'fail') rsClass = 'badge-fail';
+                    else if (proj.result.toLowerCase() === 'pending') rsClass = 'badge-discussion';
+                    resultMarkup = `<span class="badge ${rsClass}">${proj.result}</span>`;
+                }
 
                 const getTimelineTd = (val) => {
                     const hasDataClass = val.trim() !== '' ? 'timeline-has-data' : '';
@@ -476,10 +575,10 @@
 
                 tr.innerHTML = `
                     <td class="text-center" style="font-weight: 600; color: #64748b;">${proj.no}</td>
-                    <td style="font-weight: 600; color: #0f172a; white-space: normal; min-width: 250px;">${proj.name}</td>
-                    <td>${proj.sku ? `<span class="sku-tag">${proj.sku}</span>` : '-'}</td>
-                    <td class="text-center">${proj.storage ? `<span class="storage-tag">${proj.storage}</span>` : '-'}</td>
-                    <td><span class="badge ${statusClass}">${proj.status || 'On-going'}</span></td>
+                    <td style="font-weight: 600; color: #0f172a; white-space: normal; min-width: 240px;">${proj.name}</td>
+                    <td class="sku-tag">${proj.sku || '-'}</td>
+                    <td class="text-center storage-tag">${proj.storage || '-'}</td>
+                    <td>${statusMarkup}</td>
                     
                     ${getTimelineTd(proj.timeline.q4_25)}
                     ${getTimelineTd(proj.timeline.jan)}
@@ -499,13 +598,11 @@
                     <td>${proj.lastUpdate}</td>
                     <td>${proj.testingStatus}</td>
                     <td class="text-center">${reportBtn}</td>
-                    <td>${proj.result ? `<span class="badge ${resultClass}">${proj.result}</span>` : '-'}</td>
-                    <td style="white-space: normal; min-width: 200px; font-size: 12px; color: #475569;">${proj.note}</td>
+                    <td>${resultMarkup}</td>
+                    <td style="white-space: normal; min-width: 180px; font-size: 12px; color: #475569;">${proj.note}</td>
                 `;
                 tbody.appendChild(tr);
             });
-
-            document.getElementById('status-summary').textContent = `🎯 Total: ${data.filter(p => !p.isHeader).length} Items`;
         }
 
         function setupEventListeners() {
