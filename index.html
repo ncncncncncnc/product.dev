@@ -15,7 +15,7 @@
             --text-muted: #64748b;
             --table-border: #e2e8f0;
             
-            /* Status Tag Styles from 1780043332200.jpg */
+            /* Status Tag Styles */
             --ongoing-bg: #e0f2fe; --ongoing-text: #0284c7;
             --finish-bg: #fee2e2; --finish-text: #ef4444;
             --discussion-bg: #fef9c3; --discussion-text: #b45309;
@@ -53,7 +53,6 @@
         header h1 { font-size: 22px; font-weight: 700; }
         header p { color: #94a3b8; font-size: 13px; margin-top: 4px; }
 
-        /* Controls & Stats Top Panel Grid */
         .top-action-panel {
             display: flex;
             flex-direction: column;
@@ -61,7 +60,6 @@
             margin-bottom: 20px;
         }
 
-        /* Search Section Wrapper */
         .search-row {
             display: flex;
             flex-wrap: wrap;
@@ -109,7 +107,7 @@
             cursor: pointer;
         }
 
-        /* กล่องสรุปการ์ดสถิติความสูงเท่าช่องค้นหาเป๊ะๆ ตามรูป 1780044884205.jpg */
+        /* การ์ดสถิติความสูงเท่าช่องค้นหาเป๊ะๆ */
         .stats-grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -179,7 +177,6 @@
             color: #0f172a;
         }
 
-        /* สไตล์ตีตารางขึงสี่เหลี่ยมเป็นระเบียบชัดเจนตามภาพแนบ 1780043332200.jpg */
         .table-container {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -203,9 +200,6 @@
             padding: 12px 10px;
             font-weight: 600;
             border: 1px solid var(--table-border);
-            position: sticky;
-            top: 0;
-            z-index: 5;
         }
 
         th.timeline-header {
@@ -227,7 +221,6 @@
             background-color: #fff;
         }
 
-        /* แถวหัวข้อหลักสีเทาหรูทอดยาวเลิกมีปุ่มหลงช่อง */
         tr.main-category-row td {
             background-color: #e2e8f0 !important;
             font-weight: 700 !important;
@@ -235,7 +228,6 @@
             font-size: 13.5px;
         }
 
-        /* สไตล์ชุดแต่งปุ่ม Badge สวยนูนตามรูปถ่ายแนบของคุณพี่ */
         .badge {
             padding: 4px 10px;
             border-radius: 20px;
@@ -252,18 +244,8 @@
         .badge-pass { background-color: var(--pass-bg); color: var(--pass-text); }
         .badge-fail { background-color: var(--fail-bg); color: var(--fail-text); }
 
-        .storage-tag {
-            color: #475569;
-            font-weight: 500;
-            font-size: 11px;
-        }
-
-        .sku-tag {
-            font-family: monospace;
-            color: #64748b;
-            font-size: 11.5px;
-        }
-
+        .storage-tag { color: #475569; font-weight: 500; font-size: 11px; }
+        .sku-tag { font-family: monospace; color: #64748b; font-size: 11.5px; }
         .btn-report {
             display: inline-flex;
             align-items: center;
@@ -277,7 +259,6 @@
             font-size: 11px;
             font-weight: 600;
         }
-
         .btn-report:hover { background-color: #4f46e5; color: #fff; }
 
         .timeline-cell { text-align: center; font-weight: 500; }
@@ -381,255 +362,4 @@
                         <th class="month-header">MAY</th>
                         <th class="month-header">JUN</th>
                         <th class="month-header">JUL</th>
-                        <th class="month-header">AUG</th>
-                        <th class="month-header">SEP</th>
-                        <th class="month-header">OCT</th>
-                        <th class="month-header">NOV</th>
-                        <th class="month-header">DEC</th>
-                        
-                        <th class="month-header" style="background-color: #f8fafc; font-weight: 600;">Lot Receive</th>
-                        <th class="month-header" style="background-color: #f8fafc; font-weight: 600;">Last Update</th>
-                        <th class="month-header" style="background-color: #f8fafc; font-weight: 600;">Testing Status</th>
-                        <th class="month-header" style="background-color: #f8fafc; font-weight: 600;">Latest Report</th>
-                        <th class="month-header" style="background-color: #f8fafc; font-weight: 600;">Latest Result</th>
-                        <th class="month-header" style="background-color: #f8fafc; font-weight: 600;">Note</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    <tr>
-                        <td colspan="24" style="text-align: center; padding: 30px;">⏳ Syncing data elements...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXt1z6mvApFUjjiEbvGRPbAqZ6oDePBlgKIl-RQSGnsLf1yRrSjwL2qwC6J5VRDhc-hgh9sFh1y5fA/pub?gid=1071677952&single=true&output=csv';
-
-        let rawProjectsData = [];
-
-        async function fetchSheetData() {
-            try {
-                const response = await fetch(sheetUrl);
-                const csvText = await response.text();
-                parseCSV(csvText);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        function parseCSV(text) {
-            const lines = text.split(/\r?\n/);
-            if (lines.length < 3) return;
-
-            const projects = [];
-
-            for (let i = 2; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
-
-                const row = parseCSVRow(lines[i]);
-                
-                if (row.length > 1 && (row[0] || row[1])) {
-                    const numberStr = row[0].trim();
-                    const isMainHeader = numberStr !== '' && !numberStr.includes('.');
-
-                    projects.push({
-                        no: numberStr,
-                        name: row[1] || '',
-                        sku: isMainHeader ? '' : (row[2] || ''),
-                        storage: isMainHeader ? '' : (row[3] || ''),
-                        status: isMainHeader ? '' : (row[4] || ''),
-                        timeline: {
-                            q4_25: isMainHeader ? '' : (row[5] || ''),
-                            jan: isMainHeader ? '' : (row[6] || ''),
-                            feb: isMainHeader ? '' : (row[7] || ''),
-                            mar: isMainHeader ? '' : (row[8] || ''),
-                            apr: isMainHeader ? '' : (row[9] || ''),
-                            may: isMainHeader ? '' : (row[10] || ''),
-                            jun: isMainHeader ? '' : (row[11] || ''),
-                            jul: isMainHeader ? '' : (row[12] || ''),
-                            aug: isMainHeader ? '' : (row[13] || ''),
-                            sep: isMainHeader ? '' : (row[14] || ''),
-                            oct: isMainHeader ? '' : (row[15] || ''),
-                            nov: isMainHeader ? '' : (row[16] || ''),
-                            dec: isMainHeader ? '' : (row[17] || '')
-                        },
-                        batch: isMainHeader ? '' : (row[18] || ''),
-                        lastUpdate: isMainHeader ? '' : (row[19] || ''),
-                        testingStatus: isMainHeader ? '' : (row[20] || ''),
-                        reportUrl: isMainHeader ? '' : (row[21] || ''),
-                        result: isMainHeader ? '' : (row[22] || ''),
-                        note: row[23] || '',
-                        isHeader: isMainHeader
-                    });
-                }
-            }
-
-            rawProjectsData = projects;
-            calculateStats(rawProjectsData);
-            renderTable(rawProjectsData);
-            setupEventListeners();
-        }
-
-        function parseCSVRow(text) {
-            let p = '', r = [];
-            let q = false;
-            for (let i = 0; i < text.length; i++) {
-                let c = text[i];
-                if (c === '"') { q = !q; }
-                else if (c === ',' && !q) { r.push(p.trim()); p = ''; }
-                else { p += c; }
-            }
-            r.push(p.trim());
-            return r;
-        }
-
-        function calculateStats(data) {
-            const actualItems = data.filter(p => !p.isHeader);
-            
-            let total = actualItems.length;
-            let ongoing = 0;
-            let finish = 0;
-            let discussion = 0;
-            let pass = 0;
-            let fail = 0;
-
-            actualItems.forEach(p => {
-                const s = p.status.toLowerCase();
-                const r = p.result.toLowerCase();
-
-                if (s.includes('ongoing') || s.includes('on-going')) ongoing++;
-                if (s.includes('finish') || s.includes('drop')) finish++;
-                if (s.includes('discussion')) discussion++;
-
-                if (r === 'pass') pass++;
-                if (r === 'fail') fail++;
-            });
-
-            document.getElementById('stat-total-val').textContent = total;
-            document.getElementById('stat-ongoing-val').textContent = ongoing;
-            document.getElementById('stat-finish-val').textContent = finish;
-            document.getElementById('stat-discussion-val').textContent = discussion;
-            document.getElementById('stat-pass-val').textContent = pass;
-            document.getElementById('stat-fail-val').textContent = fail;
-        }
-
-        function renderTable(data) {
-            const tbody = document.getElementById('table-body');
-            tbody.innerHTML = '';
-
-            data.forEach(proj => {
-                const tr = document.createElement('tr');
-                
-                if (proj.isHeader) {
-                    tr.classList.add('main-category-row');
-                    tr.innerHTML = `
-                        <td class="text-center">${proj.no}</td>
-                        <td colspan="23">${proj.name}</td>
-                    `;
-                    tbody.appendChild(tr);
-                    return;
-                }
-
-                let statusMarkup = '-';
-                if (proj.status) {
-                    let stClass = 'badge-ongoing';
-                    let icon = '🔄';
-                    if (proj.status.toLowerCase().includes('finish') || proj.status.toLowerCase().includes('drop')) {
-                        stClass = 'badge-finish'; icon = '📁';
-                    } else if (proj.status.toLowerCase().includes('discussion')) {
-                        stClass = 'badge-discussion'; icon = '💬';
-                    }
-                    statusMarkup = `<span class="badge ${stClass}">${icon} ${proj.status}</span>`;
-                }
-
-                let resultMarkup = '-';
-                if (proj.result) {
-                    let rsClass = 'badge-ongoing';
-                    if (proj.result.toLowerCase() === 'pass') rsClass = 'badge-pass';
-                    else if (proj.result.toLowerCase() === 'fail') rsClass = 'badge-fail';
-                    else if (proj.result.toLowerCase() === 'pending') rsClass = 'badge-discussion';
-                    resultMarkup = `<span class="badge ${rsClass}">${proj.result}</span>`;
-                }
-
-                const getTimelineTd = (val) => {
-                    const hasDataClass = val.trim() !== '' ? 'timeline-has-data' : '';
-                    let displayVal = val;
-                    if (val.toUpperCase() === 'TRUE' || val === '✅') displayVal = '✅';
-                    return `<td class="timeline-cell ${hasDataClass}">${displayVal}</td>`;
-                };
-
-                let reportBtn = '';
-                if (proj.reportUrl && proj.reportUrl.startsWith('http')) {
-                    reportBtn = `<a href="${proj.reportUrl}" target="_blank" class="btn-report">📄 View</a>`;
-                } else {
-                    reportBtn = proj.reportUrl ? `<span style="font-size:11px;">${proj.reportUrl}</span>` : '-';
-                }
-
-                // สคริปต์เรียงลำดับข้อมูลใหม่ให้ตรงช่องเป๊ะๆ ไม่เยื้องแล้วค๊าา
-                tr.innerHTML = `
-                    <td class="text-center" style="font-weight: 600; color: #64748b;">${proj.no}</td>
-                    <td style="font-weight: 600; color: #0f172a; white-space: normal; min-width: 400px;">${proj.name}</td>
-                    <td class="sku-tag">${proj.sku || '-'}</td>
-                    <td class="text-center storage-tag">${proj.storage || '-'}</td>
-                    <td>${statusMarkup}</td>
-                    
-                    ${getTimelineTd(proj.timeline.q4_25)}
-                    ${getTimelineTd(proj.timeline.jan)}
-                    ${getTimelineTd(proj.timeline.feb)}
-                    ${getTimelineTd(proj.timeline.mar)}
-                    ${getTimelineTd(proj.timeline.apr)}
-                    ${getTimelineTd(proj.timeline.may)}
-                    ${getTimelineTd(proj.timeline.jun)}
-                    ${getTimelineTd(proj.timeline.jul)}
-                    ${getTimelineTd(proj.timeline.aug)}
-                    ${getTimelineTd(proj.timeline.sep)}
-                    ${getTimelineTd(proj.timeline.oct)}
-                    ${getTimelineTd(proj.timeline.nov)}
-                    ${getTimelineTd(proj.timeline.dec)}
-                    
-                    <td>${proj.batch || '-'}</td>
-                    <td>${proj.lastUpdate || '-'}</td>
-                    <td>${proj.testingStatus || '-'}</td>
-                    <td class="text-center">${reportBtn}</td>
-                    <td>${resultMarkup}</td>
-                    <td style="white-space: normal; min-width: 180px; font-size: 12px; color: #475569;">${proj.note || '-'}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function setupEventListeners() {
-            const searchInput = document.getElementById('search-input');
-            const statusFilter = document.getElementById('status-filter');
-            const resultFilter = document.getElementById('result-filter');
-
-            function filterData() {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                const selectedStatus = statusFilter.value;
-                const selectedResult = resultFilter.value;
-
-                const filtered = rawProjectsData.filter(proj => {
-                    if (proj.isHeader) return true;
-                    
-                    const matchesSearch = proj.name.toLowerCase().includes(searchTerm) || 
-                                          proj.no.toLowerCase().includes(searchTerm) ||
-                                          proj.sku.toLowerCase().includes(searchTerm);
-                    const matchesStatus = selectedStatus === '' || proj.status === selectedStatus;
-                    const matchesResult = selectedResult === '' || proj.result === selectedResult;
-
-                    return matchesSearch && matchesStatus && matchesResult;
-                });
-                renderTable(filtered);
-            }
-
-            searchInput.addEventListener('input', filterData);
-            statusFilter.addEventListener('change', filterData);
-            resultFilter.addEventListener('change', filterData);
-        }
-
-        window.addEventListener('DOMContentLoaded', fetchSheetData);
-    </script>
-</body>
-</html>
+                        <th class
