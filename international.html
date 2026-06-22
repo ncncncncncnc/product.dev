@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After You - International Projects</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&family=Anuphan:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* 🐏 โลโก้แบรนด์ด้านบนสุด */
+        .logo-container {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .logo-img {
+            width: 120px;
+            height: auto;
+        }
+
+        /* 🥞 กล่องจัดวางรูปสี่เหลี่ยมจัตุรัส 2 ฝั่ง ซ้าย-ขวา */
+        .portal-grid {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        /* 🔳 สไตล์รูปสี่เหลี่ยมจัตุรัสขอบมน (Square Tiles) */
+        .thumb-card {
+            width: 320px;
+            height: 320px;
+            aspect-ratio: 1 / 1; /* บังคับให้เป็นสี่เหลี่ยมจัตุรัสเป๊ะๆ ค๊าา */
+            border-radius: 16px; /* ขอบมนสวยละมุนพรีเมียมตามบรีฟเลยค่ะ */
+            overflow: hidden;
+            position: relative;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* เอฟเฟกต์เมาส์ชี้ ขยายตัวพรีเมียม */
+        .thumb-card:hover {
+            transform: scale(1.04);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        /* รูปภาพพื้นหลังข้างใน */
+        .thumb-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.80); /* หรี่ไฟลงนิดนึงให้อักษรสีขาวเด่นเด้งค๊าา */
+            transition: transform 0.4s ease;
+        }
+
+        .thumb-card:hover .thumb-img {
+            transform: scale(1.06);
+        }
+
+        /* ✍️ ตัวหนังสือตรงกลางสี่เหลี่ยมขอบมน */
+        .thumb-overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-family: 'Anuphan', 'Plus Jakarta Sans', sans-serif;
+            font-size: 36px; /* ไซส์ใหญ่ สวย เต็มตาค๊าา */
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            width: 90%;
+        }
+
+        /* สำหรับหน้าจอมือถือ */
+        @media (max-width: 768px) {
+            .portal-grid {
+                gap: 40px;
+                flex-direction: column;
+            }
+            .thumb-card {
+                width: 260px;
+                height: 260px;
+            }
+            .thumb-overlay-text {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <a href="index.html"><img src="logo.png" alt="After You" class="logo-img"></a>
+    </div>
+
+    <div class="portal-grid">
+        
+        <a href="#" class="thumb-card">
+            <img src="Vietnam.jpg" alt="VN" class="thumb-img">
+            <div class="thumb-overlay-text">VN</div>
+        </a>
+
+        <a href="#" onclick="alert('📌 หน้านี้อยู่ระหว่างการพัฒนาค๊าาา!')" class="thumb-card">
+            <img src="World.jpg" alt="Coming Soon" class="thumb-img">
+            <div class="thumb-overlay-text">Coming Soon</div>
+        </a>
+
+    </div>
+
+</body>
+</html>
