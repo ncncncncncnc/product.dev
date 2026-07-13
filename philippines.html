@@ -8,7 +8,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&family=Anuphan:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Anuphan:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -94,15 +94,15 @@
             width: 90%;
         }
 
-        /* 🖼️ ระบบ Popup ภาพเมนูเต็มจอมินิมอล (Modal Overlay) */
-        .menu-modal {
-            display: none; /* ซ่อนไว้ก่อนค๊าา จะทำงานเมื่อกดปุ่ม */
+        /* 🖼️ ระบบ Popup มินิมอล (Modal Overlay ทั้ง Menu และ Location) */
+        .custom-modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.85); /* พื้นหลังดำโปร่งแสงดูพรีเมียม */
+            background-color: rgba(0, 0, 0, 0.85);
             z-index: 9999;
             justify-content: center;
             align-items: center;
@@ -111,16 +111,15 @@
             transition: opacity 0.3s ease;
         }
 
-        /* คลาสทำงานสำหรับเอฟเฟกต์ Fade-in ตอนเปิดภาพ */
-        .menu-modal.active {
+        .custom-modal.active {
             display: flex;
             opacity: 1;
         }
 
-        /* จัดขนาดรูปภาพสี่เหลี่ยมผืนผ้าให้เกือบเต็มจอสวยงาม */
+        /* รูปภาพในหน้าจอ Popup Menu */
         .modal-content-img {
             max-width: 90%;
-            max-height: 85vh; /* บังคับไม่ให้ล้นจอแนวตั้งค๊าา */
+            max-height: 85vh;
             object-fit: contain;
             border-radius: 8px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
@@ -128,11 +127,72 @@
             transition: transform 0.3s ease;
         }
 
-        .menu-modal.active .modal-content-img {
+        .custom-modal.active .modal-content-img {
             transform: scale(1);
         }
 
-        /* ปุ่มกากบาท X ปิดรูปภาพ */
+        /* 📍 กล่องข้อมูลรายชื่อสาขา Popup Location */
+        .location-box {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            font-family: 'Plus Jakarta Sans', 'Anuphan', sans-serif;
+        }
+
+        .custom-modal.active .location-box {
+            transform: scale(1);
+        }
+
+        .location-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 2px solid #f5f5f5;
+            padding-bottom: 15px;
+        }
+
+        .location-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eeeeee;
+        }
+
+        .location-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .branch-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #444444;
+            margin-bottom: 6px;
+        }
+
+        .map-link {
+            display: inline-flex;
+            align-items: center;
+            color: #bfa15f; /* สีทองหม่นสไตล์คาเฟ่พรีเมียม */
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .map-link:hover {
+            color: #9e8243;
+            text-decoration: underline;
+        }
+
+        /* ปุ่มกากบาท X ปิด */
         .close-btn {
             position: absolute;
             top: 25px;
@@ -144,10 +204,6 @@
             transition: color 0.2s;
             font-family: Arial, sans-serif;
             user-select: none;
-        }
-
-        .close-btn:hover {
-            color: #dddddd;
         }
 
         @media (max-width: 768px) {
@@ -162,13 +218,11 @@
             .thumb-overlay-text {
                 font-size: 30px;
             }
-            .close-btn {
-                top: 15px;
-                right: 25px;
-                font-size: 35px;
+            .location-box {
+                padding: 25px 20px;
             }
-            .modal-content-img {
-                max-width: 95%;
+            .location-title {
+                font-size: 22px;
             }
         }
     </style>
@@ -181,39 +235,71 @@
 
     <div class="portal-grid">
         
-        <!-- 📍 1. Location -->
-        <a href="#" class="thumb-card">
+        <!-- 📍 1. Location (ปรับมาใช้ระบบเปิด Popup รายชื่อสาขาแล้วค๊าา) -->
+        <div class="thumb-card" onclick="openModal('locationModal')">
             <img src="PH_Location.jpg" alt="Location" class="thumb-img">
             <div class="thumb-overlay-text">Location</div>
-        </a>
+        </div>
 
-        <!-- 📜 2. Menu (ปรับแก้ฟังก์ชันกดแล้วเด้งภาพป๊อปอัพเมนูบอร์ดเต็มจอค๊าา) -->
-        <div class="thumb-card" onclick="openMenuModal()">
+        <!-- 📜 2. Menu -->
+        <div class="thumb-card" onclick="openModal('menuModal')">
             <img src="PH_Menu.jpg" alt="Menu" class="thumb-img">
             <div class="thumb-overlay-text">Menu</div>
         </div>
 
     </div>
 
-    <!-- 🌟 โครงสร้างหน้าต่างป๊อปอัพดึงภาพ Menu_Board.jpg แอบซ่อนอยู่ตรงนี้ค๊าา -->
-    <div id="menuModal" class="menu-modal" onclick="closeMenuModal()">
-        <span class="close-btn" onclick="closeMenuModal()">&times;</span>
+    <!-- 🌟 โครงสร้างหน้าต่างป๊อปอัพ Location ข้อมูลแน่นๆ ดูคลีนมินิมอล -->
+    <div id="locationModal" class="custom-modal" onclick="closeModal('locationModal')">
+        <span class="close-btn" onclick="closeModal('locationModal')">&times;</span>
+        <div class="location-box" onclick="event.stopPropagation()">
+            <div class="location-title">PH ONSITE LOCATIONS</div>
+            
+            <div class="location-item">
+                <div class="branch-name">📍 SM Mall of Asia, L1</div>
+                <a href="https://maps.app.goo.gl/VvFWBtbPA4qMupJFA" target="_blank" class="map-link">Find on map ↗</a>
+            </div>
+
+            <div class="location-item">
+                <div class="branch-name">📍 Ayala Glorietta 1, G/F & L2</div>
+                <a href="https://maps.app.goo.gl/usXqgdVrQaKRKniz9" target="_blank" class="map-link">Find on map ↗</a>
+            </div>
+
+            <div class="location-item">
+                <div class="branch-name">📍 SM Mall North, EDSA & L2</div>
+                <a href="https://maps.app.goo.gl/xuaBS92vMtUYd3Zr7" target="_blank" class="map-link">Find on map ↗</a>
+            </div>
+
+            <div class="location-item">
+                <div class="branch-name">📍 Festival Mall</div>
+                <a href="https://maps.app.goo.gl/Dv3ZpPRcuFvCdgbKA" target="_blank" class="map-link">Find on map ↗</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🌟 โครงสร้างหน้าต่างป๊อปอัพภาพ Menu เหมือนเดิมค๊าา -->
+    <div id="menuModal" class="custom-modal" onclick="closeModal('menuModal')">
+        <span class="close-btn" onclick="closeModal('menuModal')">&times;</span>
         <img src="Menu_Board.jpg" alt="After You PH Menu Board" class="modal-content-img" onclick="event.stopPropagation()">
     </div>
 
-    <!-- ⚡️ โค้ด JavaScript เสกเอฟเฟกต์เด้งภาพและปิดภาพอย่างนุ่มนวล -->
+    <!-- ⚡️ โค้ดควบคุมป๊อปอัพอเนกประสงค์ -->
     <script>
-        function openMenuModal() {
-            const modal = document.getElementById('menuModal');
-            modal.classList.add('active');
-            // ล็อกหน้าจอเบื้องหลังไม่ให้เลื่อนไปมาขณะดูเมนูค๊าา
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
             document.body.style.overflow = 'hidden';
         }
 
-        function closeMenuModal() {
-            const modal = document.getElementById('menuModal');
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
             modal.classList.remove('active');
-            // คืนค่าให้หน้าจอเลื่อนได้ปกติค๊าา
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); // รอเอฟเฟกต์ fade-out จบค๊าา
             document.body.style.overflow = 'auto';
         }
     </script>
