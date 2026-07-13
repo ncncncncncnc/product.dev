@@ -53,7 +53,7 @@
             width: 320px;
             height: 320px;
             aspect-ratio: 1 / 1;
-            border-radius: 16px; /* ขอบมนละมุนตาเข้าเซ็ต */
+            border-radius: 16px;
             overflow: hidden;
             position: relative;
             text-decoration: none;
@@ -94,6 +94,62 @@
             width: 90%;
         }
 
+        /* 🖼️ ระบบ Popup ภาพเมนูเต็มจอมินิมอล (Modal Overlay) */
+        .menu-modal {
+            display: none; /* ซ่อนไว้ก่อนค๊าา จะทำงานเมื่อกดปุ่ม */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* พื้นหลังดำโปร่งแสงดูพรีเมียม */
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* คลาสทำงานสำหรับเอฟเฟกต์ Fade-in ตอนเปิดภาพ */
+        .menu-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* จัดขนาดรูปภาพสี่เหลี่ยมผืนผ้าให้เกือบเต็มจอสวยงาม */
+        .modal-content-img {
+            max-width: 90%;
+            max-height: 85vh; /* บังคับไม่ให้ล้นจอแนวตั้งค๊าา */
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-modal.active .modal-content-img {
+            transform: scale(1);
+        }
+
+        /* ปุ่มกากบาท X ปิดรูปภาพ */
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            color: #ffffff;
+            font-size: 40px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-family: Arial, sans-serif;
+            user-select: none;
+        }
+
+        .close-btn:hover {
+            color: #dddddd;
+        }
+
         @media (max-width: 768px) {
             .portal-grid {
                 gap: 40px;
@@ -106,31 +162,61 @@
             .thumb-overlay-text {
                 font-size: 30px;
             }
+            .close-btn {
+                top: 15px;
+                right: 25px;
+                font-size: 35px;
+            }
+            .modal-content-img {
+                max-width: 95%;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="logo-container">
-        <!-- กดที่โลโก้แล้วถอยกลับไปหน้าหลักต่างประเทศค๊าา -->
         <a href="international.html"><img src="logo.png" alt="After You" class="logo-img"></a>
     </div>
 
     <div class="portal-grid">
         
-        <!-- 📍 1. Location (ดึงไฟล์ภาพ PH_Location.jpg ค๊าา) -->
+        <!-- 📍 1. Location -->
         <a href="#" class="thumb-card">
             <img src="PH_Location.jpg" alt="Location" class="thumb-img">
             <div class="thumb-overlay-text">Location</div>
         </a>
 
-        <!-- 📜 2. Menu (ดึงไฟล์ภาพ PH_Menu.jpg ค๊าา) -->
-        <a href="#" class="thumb-card">
+        <!-- 📜 2. Menu (ปรับแก้ฟังก์ชันกดแล้วเด้งภาพป๊อปอัพเมนูบอร์ดเต็มจอค๊าา) -->
+        <div class="thumb-card" onclick="openMenuModal()">
             <img src="PH_Menu.jpg" alt="Menu" class="thumb-img">
             <div class="thumb-overlay-text">Menu</div>
-        </a>
+        </div>
 
     </div>
+
+    <!-- 🌟 โครงสร้างหน้าต่างป๊อปอัพดึงภาพ Menu_Board.jpg แอบซ่อนอยู่ตรงนี้ค๊าา -->
+    <div id="menuModal" class="menu-modal" onclick="closeMenuModal()">
+        <span class="close-btn" onclick="closeMenuModal()">&times;</span>
+        <img src="Menu_Board.jpg" alt="After You PH Menu Board" class="modal-content-img" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- ⚡️ โค้ด JavaScript เสกเอฟเฟกต์เด้งภาพและปิดภาพอย่างนุ่มนวล -->
+    <script>
+        function openMenuModal() {
+            const modal = document.getElementById('menuModal');
+            modal.classList.add('active');
+            // ล็อกหน้าจอเบื้องหลังไม่ให้เลื่อนไปมาขณะดูเมนูค๊าา
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenuModal() {
+            const modal = document.getElementById('menuModal');
+            modal.classList.remove('active');
+            // คืนค่าให้หน้าจอเลื่อนได้ปกติค๊าา
+            document.body.style.overflow = 'auto';
+        }
+    </script>
 
 </body>
 </html>
